@@ -1,24 +1,21 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
+import React from "react";
+import ReactDOM from "react-dom/client";
 
 // Redux
-import { Provider } from 'react-redux';
-import { store } from './redux/store';
-
-// TonConnect UI
-import { TonConnectUIProvider } from '@tonconnect/ui-react';
+import { Provider } from "react-redux";
+import { store } from "./redux/store";
 
 // Rainbow Kit
-import './polyfills';
+import "./polyfills";
 
-import { createWalletConnectModal } from './configs/walletConnect';
+import { createWalletConnectModal } from "./configs/walletConnect";
 
 // Telegram Mini App SDK
-import WebApp from '@twa-dev/sdk';
+import WebApp from "@twa-dev/sdk";
 
 // App + Styles
-import App from './App';
-import './index.css';
+import App from "./App";
+import "./index.css";
 
 // Hide the main button
 WebApp.MainButton.hide();
@@ -33,15 +30,15 @@ WebApp.enableClosingConfirmation();
 createWalletConnectModal();
 
 const root = ReactDOM.createRoot(
-    document.getElementById('root') as HTMLElement
+  document.getElementById("root") as HTMLElement
 );
 
 root.render(
-    <React.StrictMode>
-        <Provider store={store}>
-            <TonConnectUIProvider manifestUrl="https://softstack.github.io/telegram-mini-app/tonconnect-manifest.json">
-                <App />
-            </TonConnectUIProvider>
-        </Provider>
-    </React.StrictMode>
+  <React.StrictMode>
+    <Provider store={store}>
+      <div>
+        <App />
+      </div>
+    </Provider>
+  </React.StrictMode>
 );

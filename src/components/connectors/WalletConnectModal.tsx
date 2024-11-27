@@ -1,26 +1,42 @@
-import React from 'react';
-import { useWeb3Modal } from '@web3modal/ethers/react';
-
-import ConnectButton from '../buttons/ConnectButton';
-
+import React, { useEffect, useState } from "react";
+import {
+  useAppKitState,
+  useAppKit,
+  useAppKitAccount,
+  useAppKitNetwork,
+} from "@reown/appkit/react";
+import ConnectButton from "../buttons/ConnectButton";
 type Props = {
-    title: string;
-    icon: string;
-    accountCallback: (account: string | null) => void;
+  title: string;
+  icon: string;
+  onCallback: (
+    isConnected: boolean,
+    selectedNetworkId: string | undefined,
+    address: string,
+    status: string
+  ) => void;
 };
 
-const WalletConnectModal: React.FC<Props> = ({ title, icon }) => {
-    const { open } = useWeb3Modal();
+const WalletConnectModal: React.FC<Props> = ({ title, icon, onCallback }) => {
+  const { open } = useAppKit();
+  const { selectedNetworkId } = useAppKitState();
+  const { address, isConnected, caipAddress, status } = useAppKitAccount();
+  const { switchNetwork } = useAppKitNetwork();
 
-    const connect = async () => {
-        open();
+  const connect = () => {
+    open({ view: "Connect" });
+  };
+  useEffect(() => {
+    const setupProvider = () => {
+      onCallback(isConnected, selectedNetworkId, address, status);
     };
-
-    return (
-        <>
-            <ConnectButton title={title} icon={icon} callback={connect} />
-        </>
-    );
+    setupProvider();
+  }, [selectedNetworkId, onCallback, address, isConnected, status]);
+  return (
+    <>
+      <ConnectButton title={title} icon={icon} callback={connect} />
+    </>
+  );
 };
 
 export default WalletConnectModal;

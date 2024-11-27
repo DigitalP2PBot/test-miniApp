@@ -1,5 +1,5 @@
 {
-    "name": "telegram-mini-app-poc",
+    "name": "DigitalP2P Exchange",
     "private": true,
     "version": "0.0.0",
     "type": "module",
@@ -13,6 +13,8 @@
     },
     "dependencies": {
         "@reduxjs/toolkit": "^2.2.4",
+        "@reown/appkit": "^1.5.2",
+        "@reown/appkit-adapter-ethers": "^1.5.2",
         "@tanstack/react-query": "^5.29.0",
         "@tonconnect/ui-react": "^2.0.0",
         "@twa-dev/sdk": "^7.0.0",
@@ -27,7 +29,7 @@
         "axios": "^1.6.8",
         "color-thief-react": "^2.1.0",
         "dotenv": "^16.4.5",
-        "ethers": "^6.11.1",
+        "ethers": "^6.13.4",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
         "react-redux": "^9.1.2",
