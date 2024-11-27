@@ -56,8 +56,15 @@ function App() {
   const [view, setView] = useState<View>(View.CONNECT);
   const [userWalletAddress, setWalletAddress] = useState<string>(null);
   const [connectionStatus, setConnectionStatus] = useState<string>(null);
+  const [messageLog, setMessageLog] = useState<string>("");
 
-  // Connection State
+  const telegramWebApp = window.Telegram.WebApp;
+
+  // Parse query parameters from the URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const orderId = urlParams.get("orderId");
+  const cryptoAmount = urlParams.get("cryptoAmount");
+
   const connectionState = useSelector(
     (state: RootState) => state.connection.connectionState
   );
@@ -92,9 +99,9 @@ function App() {
         signer
       );
       await digitalP2PExchangeContract.processOrder(
-        "e09d4c41-20ee-4414-8cb4-73ba257ec96b",
-        2320000,
-        2320000
+        orderId,
+        cryptoAmount,
+        cryptoAmount
       );
     }
   };
@@ -165,6 +172,16 @@ function App() {
     dispatch(setConnectionState(walletConnectionState.DISCONNECTED));
   };
 
+  useEffect(() => {
+    // Access the WebApp object
+
+    // Log the values
+    const logMessage = `location search ${window.location.search} app data ${telegramWebApp.initData}`;
+    setMessageLog(logMessage);
+
+    // Optional: Log to console for debugging
+    console.log(logMessage);
+  }, []);
   return (
     <div className="flex flex-col h-full min-h-screen w-screen rounded-xl bg-customGrayWallet">
       <div className="flex flex-col flex-grow min-h-full justify-end">
@@ -176,6 +193,10 @@ function App() {
             <div>
               <p className="text-customGrayText mt-0 mr-0 mb-4 ml-0 text-left">
                 Order Summary
+              </p>
+
+              <p className="text-customGrayText mt-0 mr-0 mb-4 ml-0 text-left">
+                Message log {messageLog}
               </p>
               {connectionStatus === walletConnectionState.CONNECTED && (
                 <>
