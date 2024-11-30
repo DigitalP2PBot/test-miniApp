@@ -4,7 +4,11 @@ import { AppDispatch, RootState } from "./redux/store";
 import { AccountControllerState } from "@reown/appkit-core";
 
 import { BrowserProvider, Contract, Eip1193Provider } from "ethers";
-import { useDisconnect, useAppKitProvider } from "@reown/appkit/react";
+import {
+  useDisconnect,
+  useAppKitProvider,
+  useAppKit,
+} from "@reown/appkit/react";
 import PrimaryButton from "./components/buttons/PrimaryButton";
 
 import walletConnectIcon from "./assets/wallet_connect.png";
@@ -37,6 +41,7 @@ const digitalP2PExchangeAbi = [
 ];
 WebApp.setHeaderColor("#1a1a1a");
 function App() {
+  const { close } = useAppKit();
   const { walletProvider } = useAppKitProvider("eip155");
   const { disconnect } = useDisconnect();
   const [view, setView] = useState<View>(View.CONNECT);
@@ -50,9 +55,11 @@ function App() {
   const telegramWebApp = window.Telegram.WebApp;
 
   // Parse query parameters from the URL
-  //const urlParams = new URLSearchParams(window.location.search);
-  //const orderId = urlParams.get("orderId");
-  //const cryptoAmount = urlParams.get("cryptoAmount");
+  const urlParams = new URLSearchParams(window.location.search);
+  const orderId: string = urlParams.get("orderId") as string;
+  const cryptoAmount: number = parseFloat(
+    urlParams.get("cryptoAmount") as string
+  );
 
   const connectionState = useSelector(
     (state: RootState) => state.connection.connectionState
@@ -90,11 +97,17 @@ function App() {
         signer
       );
       await digitalP2PExchangeContract.processOrder(
-        "d74dd698-9abe-4766-a29c-0ec6616d569b",
-        2230000,
-        2230000
+        orderId,
+        cryptoAmount,
+        cryptoAmount
       );
     }
+    await disconnect();
+    await close();
+  };
+  const disconnectUser = async () => {
+    await disconnect();
+    await close();
   };
 
   // Get Accounts
@@ -160,9 +173,6 @@ function App() {
     // Log the values
     const logMessage = `location search ${window.location.search} app data ${telegramWebApp.initData}`;
     setMessageLog(logMessage);
-
-    // Optional: Log to console for debugging
-    console.log(logMessage);
   }, []);
   return (
     <div className="flex flex-col h-full min-h-screen w-screen rounded-xl bg-customGrayWallet">
@@ -203,24 +213,19 @@ function App() {
                 title="Approve transaction"
                 callback={approveTransaction}
               />
+
+              <PrimaryButton title="Disconnect" callback={disconnectUser} />
             </>
+          )}
+          {view === View.CONNECT && (
+            <WalletConnectModal
+              title="Connect wallet"
+              icon={walletConnectIcon}
+              onCallback={handleConnect}
+            />
           )}
         </div>
       </div>
-      {view === View.CONNECT && (
-        <div className="components-container">
-          <div className={`transition-opacity duration-1000 ease-in-out`}>
-            <div className="flex flex-col absolute w-full bottom-0 bg-white pt-4 px-8 pb-14 gap-4 rounded-t-3xl rounded-b-xl shadow-custom-white">
-              <h2 className="headline">CONNECT</h2>
-              <WalletConnectModal
-                title="Connect wallet"
-                icon={walletConnectIcon}
-                onCallback={handleConnect}
-              />
-            </div>
-          </div>
-        </div>
-      )}
       {view === View.CONNECTED && (
         <>
           <div className="flex flex-col gap-2 p-2 mb-4">

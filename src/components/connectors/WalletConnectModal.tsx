@@ -25,7 +25,7 @@ const WalletConnectModal: React.FC<Props> = ({ title, icon, onCallback }) => {
   //const { switchNetwork } = useAppKitNetwork();
 
   const connect = async () => {
-    await open({ view: "Connect" });
+    open({ view: "Connect" });
   };
   useEffect(() => {
     const setupProvider = () => {
