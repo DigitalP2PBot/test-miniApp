@@ -1,30 +1,16 @@
 import { useState, useEffect } from "react";
 import WebApp from "@twa-dev/sdk";
-import axios from "axios";
 import { AppDispatch, RootState } from "./redux/store";
+import { AccountControllerState } from "@reown/appkit-core";
 
-import { BrowserProvider, Contract, formatUnits } from "ethers";
+import { BrowserProvider, Contract, Eip1193Provider } from "ethers";
 import { useDisconnect, useAppKitProvider } from "@reown/appkit/react";
-import Avatar from "./components/utils/Avatar";
-import BackButton from "./components/buttons/BackButton";
-import SkipButton from "./components/buttons/SkipButton";
 import PrimaryButton from "./components/buttons/PrimaryButton";
-import Tooltip from "./components/utils/Tooltip";
-import TransactionButton from "./components/buttons/TransactionButton";
-import TransactionHistoryItem from "./components/utils/TransactionHistoryItem";
-import ConnectOverlay from "./components/connectOverlay/ConnectOverlay";
 
-import evmConnectIcon from "./assets/EVM_connect_logos.png";
 import walletConnectIcon from "./assets/wallet_connect.png";
-import etherIcon from "./assets/ether_icon.png";
-import polygonIcon from "./assets/polygon_logo.svg";
-import sendIcon from "./assets/send_icon.svg";
-import receiveIcon from "./assets/receive_icon.svg";
-import sellIcon from "./assets/sell_icon.svg";
 import WalletConnectModal from "./components/connectors/WalletConnectModal";
 import { useDispatch, useSelector } from "react-redux";
 import { setConnectionState } from "./redux/connectionSlice";
-import { ethers } from "ethers";
 
 enum View {
   LANDING = 0,
@@ -54,16 +40,19 @@ function App() {
   const { walletProvider } = useAppKitProvider("eip155");
   const { disconnect } = useDisconnect();
   const [view, setView] = useState<View>(View.CONNECT);
-  const [userWalletAddress, setWalletAddress] = useState<string>(null);
-  const [connectionStatus, setConnectionStatus] = useState<string>(null);
+  const [userWalletAddress, setWalletAddress] = useState<string | undefined>(
+    ""
+  );
+  const [connectionStatus, setConnectionStatus] =
+    useState<AccountControllerState["status"]>();
   const [messageLog, setMessageLog] = useState<string>("");
 
   const telegramWebApp = window.Telegram.WebApp;
 
   // Parse query parameters from the URL
-  const urlParams = new URLSearchParams(window.location.search);
-  const orderId = urlParams.get("orderId");
-  const cryptoAmount = urlParams.get("cryptoAmount");
+  //const urlParams = new URLSearchParams(window.location.search);
+  //const orderId = urlParams.get("orderId");
+  //const cryptoAmount = urlParams.get("cryptoAmount");
 
   const connectionState = useSelector(
     (state: RootState) => state.connection.connectionState
@@ -71,21 +60,23 @@ function App() {
 
   const dispatch = useDispatch<AppDispatch>();
 
-  const skip = () => {
-    setView(view + 1);
-  };
-  const goBack = () => {
-    if (view === View.LANDING) {
-      return;
-    }
-    setView(view - 1);
-  };
+  //const skip = () => {
+  //  setView(view + 1);
+  //};
+  //const goBack = () => {
+  //  if (view === View.LANDING) {
+  //   return;
+  //}
+  //  setView(view - 1);
+  //};
 
-  const openWallet = () => {
-    setView(View.WALLET);
-  };
+  //const openWallet = () => {
+  //  setView(View.WALLET);
+  //};
   const approveTransaction = async () => {
-    const ethersProvider = new BrowserProvider(walletProvider);
+    const ethersProvider = new BrowserProvider(
+      walletProvider as Eip1193Provider
+    );
     const signer = await ethersProvider.getSigner();
     const usdtContract = new Contract(polygonUsdtAddress, USDTAbi, signer);
     const digitalP2PCanMoveFunds = await usdtContract.approve(
@@ -99,26 +90,26 @@ function App() {
         signer
       );
       await digitalP2PExchangeContract.processOrder(
-        orderId,
-        cryptoAmount,
-        cryptoAmount
+        "d74dd698-9abe-4766-a29c-0ec6616d569b",
+        2230000,
+        2230000
       );
     }
   };
 
   // Get Accounts
-  const [account, setAccount] = useState<string | null>(null);
-  const [balance, setBalance] = useState<string | null>(null);
+  //const [account, setAccount] = useState<string | null>(null);
+  //const [balance, setBalance] = useState<string | null>(null);
 
-  const getAccountData = async () => {
-    const providerId = window.localStorage.getItem("providerId");
+  const getAccountData = () => {
+    //const providerId = window.localStorage.getItem("providerId");
   };
 
   const handleConnect = (
     isConnected: boolean,
-    selectedNetworkId: string | undefined,
-    address: string,
-    status: string
+    status: AccountControllerState["status"],
+    address?: string
+    //selectedNetworkId: CaipNetworkId
   ) => {
     if (isConnected) {
       dispatch(setConnectionState(walletConnectionState.CONNECTED));
@@ -155,16 +146,7 @@ function App() {
   }, [connectionState, walletConnectionState]);
 
   // Test Functions
-  const [signedMessage, setSignedMessage] = useState<string | null>(null);
-  const triggerTestMessageSign = () => {
-    const providerId = window.localStorage.getItem("providerId");
-    const uri = window.localStorage.getItem("walletConnectURI");
-    if (wallet === "metamask") {
-      WebApp.openLink(`https://metamask.app.link/wc?uri=${uri}`);
-    } else if (wallet === "trust") {
-      WebApp.openLink(`https://link.trustwallet.com/wc?uri=${uri}`);
-    }
-  };
+  //const [signedMessage, setSignedMessage] = useState<string | null>(null);
 
   // Disconnect
   const handleDisconnect = async () => {

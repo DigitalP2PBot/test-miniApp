@@ -2,25 +2,23 @@ import { createAppKit } from "@reown/appkit/react";
 import { EthersAdapter } from "@reown/appkit-adapter-ethers";
 import { polygon, polygonAmoy } from "@reown/appkit/networks";
 
+const DEFAULT_NETWORK = import.meta.env.VITE_DEFAULT_NETWORK || "polygon";
+const defaultNetwork = DEFAULT_NETWORK == "polygon" ? polygon : polygonAmoy;
 export const createWalletConnectModal = () => {
-  // 1. Get projectId
-  const projectId = import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID || "";
+  const projectId =
+    import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID || ("" as string);
 
-  // 2. Set the networks
-  const networks = [polygon, polygonAmoy];
-
-  // 3. Create a metadata object - optional
   const metadata = {
-    name: "My Website",
-    description: "My Website description",
-    url: "https://mywebsite.com", // origin must match your domain & subdomain
+    name: "DigitalP2P",
+    description: "DigitalP2P Defi Protocol",
+    url: "https://digitalp2p.co", // origin must match your domain & subdomain
     icons: ["https://avatars.mywebsite.com/"],
   };
 
-  // 4. Create a AppKit instance
   createAppKit({
     adapters: [new EthersAdapter()],
-    networks,
+    networks: [defaultNetwork],
+    defaultNetwork: defaultNetwork,
     metadata,
     projectId,
     features: {
