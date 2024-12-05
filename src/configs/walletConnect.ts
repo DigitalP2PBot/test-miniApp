@@ -9,7 +9,7 @@ export const createWalletConnectModal = () => {
     import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID || ("" as string);
 
   const metadata = {
-    name: "DigitalP2P",
+    name: "DigitalP2P Exchange",
     description: "DigitalP2P Defi Protocol",
     url: "https://digitalp2p.co", // origin must match your domain & subdomain
     icons: ["https://avatars.mywebsite.com/"],
