@@ -15,7 +15,7 @@ export const createWalletConnectModal = () => {
   const metadata = {
     name: "DigitalP2P",
     description: "DigitalP2P Defi Protocol",
-    url: "https://digitalp2p.co", // origin must match your domain & subdomain
+    url: "https://digitalp2pbot.github.io", // origin must match your domain & subdomain
     icons: ["https://avatars.mywebsite.com/"],
   };
   const wagmiAdapter = new WagmiAdapter({
