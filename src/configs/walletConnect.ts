@@ -1,5 +1,4 @@
 import { createAppKit } from "@reown/appkit/react";
-import { EthersAdapter } from "@reown/appkit-adapter-ethers";
 import { polygon, polygonAmoy } from "@reown/appkit/networks";
 
 import { WagmiAdapter } from "@reown/appkit-adapter-wagmi";
@@ -14,7 +13,7 @@ export const createWalletConnectModal = () => {
   const networks = [defaultNetwork];
 
   const metadata = {
-    name: "DigitalP2P Exchange",
+    name: "DigitalP2P",
     description: "DigitalP2P Defi Protocol",
     url: "https://digitalp2p.co", // origin must match your domain & subdomain
     icons: ["https://avatars.mywebsite.com/"],
