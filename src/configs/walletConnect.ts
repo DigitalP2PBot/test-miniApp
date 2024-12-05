@@ -2,6 +2,8 @@ import { createAppKit } from "@reown/appkit/react";
 import { EthersAdapter } from "@reown/appkit-adapter-ethers";
 import { polygon, polygonAmoy } from "@reown/appkit/networks";
 
+import { WagmiAdapter } from "@reown/appkit-adapter-wagmi";
+
 const DEFAULT_NETWORK = import.meta.env.VITE_DEFAULT_NETWORK || "polygon";
 const defaultNetwork = DEFAULT_NETWORK == "polygon" ? polygon : polygonAmoy;
 export const createWalletConnectModal = () => {
@@ -16,13 +18,15 @@ export const createWalletConnectModal = () => {
   };
 
   createAppKit({
-    adapters: [new EthersAdapter()],
     networks: [defaultNetwork],
     defaultNetwork: defaultNetwork,
     metadata,
     projectId,
     features: {
       analytics: true, // Optional - defaults to your Cloud configuration
+      socials: false, // Optional - defaults to your Cloud configuration
+      emailShowWallets: false,
+      email: false,
     },
   });
 };
