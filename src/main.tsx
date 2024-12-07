@@ -36,9 +36,7 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      <div>
-        <App />
-      </div>
+      <div>prueba</div>
     </Provider>
   </React.StrictMode>
 );
