@@ -22,8 +22,6 @@ permissions:
 concurrency:
   group: "pages"
   cancel-in-progress: true
-
-jobs:
   # Single deploy job since we're just deploying
   deploy:
     environment:
@@ -48,6 +46,7 @@ jobs:
           echo VITE_POLYGON_USDT_ADDRESS=${{ secrets.POLYGON_USDT_ADDRESS }} >> .env
           echo BRIDGE_URL=${{ secrets.BRIDGE_URL }} >> .env
           echo VITE_DEFAULT_NETWORK=${{ secrets.DEFAULT_NETWORK }} >> .env
+          echo VITE_ENVIRONMENT=${{ secrets.ENVIRONMENT }} >> .env
           cat .env
       - name: Install dependencies
         run: npm install

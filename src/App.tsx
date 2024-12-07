@@ -9,10 +9,13 @@ import {
   useAppKitProvider,
   useAppKit,
 } from "@reown/appkit/react";
+
+import logo from "./assets/digital_p2p_logo.png";
+
 import PrimaryButton from "./components/buttons/PrimaryButton";
 
-import walletConnectIcon from "./assets/wallet_connect.png";
 import WalletConnectModal from "./components/connectors/WalletConnectModal";
+
 import { useDispatch, useSelector } from "react-redux";
 import { setConnectionState } from "./redux/connectionSlice";
 
@@ -31,16 +34,18 @@ const digitalP2PExchangeAddress = import.meta.env
   .VITE_DIGITALP2P_POLYGON_SM_ADDRESS;
 
 const polygonUsdtAddress = import.meta.env.VITE_POLYGON_USDT_ADDRESS;
+const env = import.meta.env.VITE_ENVIRONMENT;
 
 const USDTAbi = [
   "function approve(address spender, uint256 value) view returns (bool)",
 ];
 
 const digitalP2PExchangeAbi = [
-  "function processOrder(string _orderId, uint256 userUsdtAmountSent,uint256 orderUsdtAmount)",
+  "function processOrder(string _orderId, uint256 cryptoAmount)",
 ];
 WebApp.setHeaderColor("#1a1a1a");
 function App() {
+  const USDT_DECIMAL = 1_000_000;
   const { close } = useAppKit();
   const { walletProvider } = useAppKitProvider("eip155");
   const { disconnect } = useDisconnect();
@@ -48,38 +53,40 @@ function App() {
   const [userWalletAddress, setWalletAddress] = useState<string | undefined>(
     ""
   );
+  const [logMesasgeError, setLogMessageError] = useState<string>("");
+  const [logMesasgeSuccess, setLogMessageSuccess] = useState<string>("");
   const [connectionStatus, setConnectionStatus] =
     useState<AccountControllerState["status"]>();
   const [messageLog, setMessageLog] = useState<string>("");
 
   const telegramWebApp = window.Telegram.WebApp;
 
-  // Parse query parameters from the URL
   const urlParams = new URLSearchParams(window.location.search);
   const orderId: string = urlParams.get("orderId") as string;
   const cryptoAmount: number = parseFloat(
     urlParams.get("cryptoAmount") as string
   );
+  const summaryCopy =
+    (urlParams.get("summaryCopy") as string) ?? "Resumen de la orden";
+  const buttonTitle =
+    (urlParams.get("buttonTitleCopy") as string) ?? "Conectar billetera";
+  const orderCopy = (urlParams.get("orderCopy") as string) ?? "Orden id";
+  const cyprtoAmountCopy =
+    (urlParams.get("cryptoAmountCopy") as string) ?? "Usdt a transferir";
+  const approveTransactionCopy =
+    (urlParams.get("approveTransactionCopy") as string) ?? "Depositar fondos";
+  const walletAddressCopy =
+    (urlParams.get("walletAddressCopy") as string) ??
+    "Dirección de tu billetera";
 
   const connectionState = useSelector(
     (state: RootState) => state.connection.connectionState
   );
 
   const dispatch = useDispatch<AppDispatch>();
-
-  //const skip = () => {
-  //  setView(view + 1);
-  //};
-  //const goBack = () => {
-  //  if (view === View.LANDING) {
-  //   return;
-  //}
-  //  setView(view - 1);
-  //};
-
-  //const openWallet = () => {
-  //  setView(View.WALLET);
-  //};
+  const cryptoAmountDisplay = (amount: number) => {
+    return (amount / USDT_DECIMAL).toFixed(2);
+  };
   const approveTransaction = async () => {
     const ethersProvider = new BrowserProvider(
       walletProvider as Eip1193Provider
@@ -88,7 +95,7 @@ function App() {
     const usdtContract = new Contract(polygonUsdtAddress, USDTAbi, signer);
     const digitalP2PCanMoveFunds = await usdtContract.approve(
       digitalP2PExchangeAddress,
-      3
+      cryptoAmount
     );
     if (digitalP2PCanMoveFunds) {
       const digitalP2PExchangeContract = new Contract(
@@ -96,23 +103,25 @@ function App() {
         digitalP2PExchangeAbi,
         signer
       );
-      await digitalP2PExchangeContract.processOrder(
-        orderId,
-        cryptoAmount,
-        cryptoAmount
+      try {
+        await digitalP2PExchangeContract.processOrder(orderId, cryptoAmount);
+        setLogMessageSuccess("Transacción aprobada con éxito");
+        await handleDisconnect();
+      } catch (e) {
+        setLogMessageError(
+          "Error al aprobar la transacción, verifica que tienes suficientes fondos"
+        );
+      }
+    } else {
+      setLogMessageError(
+        "Debes aprobar la transacción para continuar con el intercambio"
       );
     }
-    await disconnect();
-    await close();
   };
   const disconnectUser = async () => {
     await disconnect();
     await close();
   };
-
-  // Get Accounts
-  //const [account, setAccount] = useState<string | null>(null);
-  //const [balance, setBalance] = useState<string | null>(null);
 
   const getAccountData = () => {
     //const providerId = window.localStorage.getItem("providerId");
@@ -124,6 +133,7 @@ function App() {
     address?: string
     //selectedNetworkId: CaipNetworkId
   ) => {
+    console.log("handle connect ", isConnected, status, address);
     if (isConnected) {
       dispatch(setConnectionState(walletConnectionState.CONNECTED));
       setView(View.CONNECTED);
@@ -150,6 +160,7 @@ function App() {
   }, [view]);
 
   useEffect(() => {
+    console.log("disconnect user", connectionState);
     //console.log("connectionState", connectionState);
     if (connectionState === walletConnectionState.CONNECTED) {
       setView(View.CONNECTED);
@@ -163,7 +174,7 @@ function App() {
 
   // Disconnect
   const handleDisconnect = async () => {
-    await disconnect();
+    await disconnectUser();
     dispatch(setConnectionState(walletConnectionState.DISCONNECTED));
   };
 
@@ -182,64 +193,72 @@ function App() {
             <div>
               <h2 className="headline">DigitalP2P Exchange</h2>
             </div>
+            {logMesasgeError && (
+              <>
+                <div
+                  className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+                  role="alert"
+                >
+                  {logMesasgeError}
+                </div>
+              </>
+            )}
+            {logMesasgeSuccess && (
+              <>
+                <div
+                  className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+                  role="alert"
+                >
+                  {logMesasgeSuccess}
+                </div>
+              </>
+            )}
             <div>
-              <p className="text-customGrayText mt-0 mr-0 mb-4 ml-0 text-left">
-                Order Summary Test
-              </p>
-
-              <p className="text-customGrayText mt-0 mr-0 mb-4 ml-0 text-left">
-                Message log {messageLog}
-              </p>
               {connectionStatus === walletConnectionState.CONNECTED && (
                 <>
                   <p className="text-customGrayText mt-0 mr-0 mb-4 ml-0 text-left">
-                    Connection status: {connectionStatus}
-                  </p>
-                  <p className="text-customGrayText mt-0 mr-0 mb-4 ml-0 text-left">
-                    Your Wallet Address: {userWalletAddress}
+                    {walletAddressCopy}: {userWalletAddress}
                   </p>
                 </>
               )}
               <p className="text-customGrayText mt-0 mr-0 mb-4 ml-0 text-left">
-                Se van a transferir 3.3 usdt de tu wallet a nuestro contrato
-                inteligente. Si el valor mostrado es manipulado la orden sera
-                congelado.
+                {summaryCopy}:
               </p>
+
+              <p className="text-customGrayText mt-0 mr-0 mb-4 ml-0 text-left">
+                {orderCopy}: {orderId}
+              </p>
+
+              <p className="text-customGrayText mt-0 mr-0 mb-4 ml-0 text-left">
+                {cyprtoAmountCopy}: {cryptoAmountDisplay(cryptoAmount)}
+              </p>
+              {env === "dev" && (
+                <p className="text-customGrayText mt-0 mr-0 mb-4 ml-0 text-left">
+                  Message log {messageLog}
+                </p>
+              )}
             </div>
           </div>
           {view === View.CONNECTED && (
             <>
               <PrimaryButton
-                title="Approve transaction"
+                title={approveTransactionCopy}
                 callback={approveTransaction}
               />
-
-              <PrimaryButton title="Disconnect" callback={disconnectUser} />
+              {env === "dev" && (
+                <PrimaryButton title="Disconnect" callback={handleDisconnect} />
+              )}
             </>
           )}
           {view === View.CONNECT && (
             <WalletConnectModal
-              title="Connect wallet"
-              icon={walletConnectIcon}
+              title={buttonTitle}
               onCallback={handleConnect}
+              icon={logo}
             />
           )}
         </div>
       </div>
-      {view === View.CONNECTED && (
-        <>
-          <div className="flex flex-col gap-2 p-2 mb-4">
-            <div className="hidden">
-              <PrimaryButton
-                title="Disconnectt"
-                className="bg-red-200 border border-red-300 active:bg-red-300"
-                textColor="customBlackText"
-                callback={handleDisconnect}
-              />
-            </div>
-          </div>
-        </>
-      )}
     </div>
   );
 }

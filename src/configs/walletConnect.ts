@@ -1,6 +1,8 @@
 import { createAppKit } from "@reown/appkit/react";
 import { polygon, polygonAmoy } from "@reown/appkit/networks";
 
+import { EthersAdapter } from "@reown/appkit-adapter-ethers";
+
 const DEFAULT_NETWORK = import.meta.env.VITE_DEFAULT_NETWORK || "polygon";
 const defaultNetwork = DEFAULT_NETWORK == "polygon" ? polygon : polygonAmoy;
 export const createWalletConnectModal = () => {
@@ -15,6 +17,7 @@ export const createWalletConnectModal = () => {
   };
 
   createAppKit({
+    adapters: [new EthersAdapter()],
     networks: [defaultNetwork],
     defaultNetwork: defaultNetwork,
     metadata,
