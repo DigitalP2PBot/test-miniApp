@@ -2,7 +2,17 @@ import { createAppKit } from "@reown/appkit/react";
 import { polygon, polygonAmoy } from "@reown/appkit/networks";
 
 const DEFAULT_NETWORK = import.meta.env.VITE_DEFAULT_NETWORK || "polygon";
-const defaultNetwork = DEFAULT_NETWORK == "polygon" ? polygon : polygonAmoy;
+const defaultNetwork =
+  DEFAULT_NETWORK == "polygon"
+    ? polygon
+    : {
+        ...polygonAmoy,
+        rpcUrls: {
+          default: {
+            http: ["https://polygon-amoy.drpc.org"],
+          },
+        },
+      };
 export const createWalletConnectModal = () => {
   const projectId =
     import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID || ("" as string);
@@ -10,7 +20,7 @@ export const createWalletConnectModal = () => {
   const metadata = {
     name: "DigitalP2P Exchange",
     description: "DigitalP2P Defi Protocol",
-    url: "https://digitalp2pbot.github.io/miniApp/", // origin must match your domain & subdomain
+    url: "https://digitalp2pbot.github.io", // origin must match your domain & subdomain
     icons: [""],
   };
 
