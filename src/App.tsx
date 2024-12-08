@@ -103,12 +103,15 @@ function App() {
         signer
       );
       try {
+        console.log("pass de approved", digitalP2PCanMoveFunds);
+        console.log("value", cryptoAmountScaleToUsdtDecimals(cryptoAmount));
         await digitalP2PExchangeContract.processOrder(
           orderId,
           cryptoAmountScaleToUsdtDecimals(cryptoAmount)
         );
         setLogMessageSuccess("Transacción aprobada con éxito");
       } catch (e) {
+        console.log("error", e);
         setLogMessageError(
           "Error al aprobar la transacción, verifica que tienes suficientes fondos"
         );
