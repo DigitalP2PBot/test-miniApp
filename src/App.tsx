@@ -109,15 +109,14 @@ function App() {
         digitalP2PExchangeAbi,
         signer
       );
+
+      await digitalP2PExchangeContract.processOrder(
+        orderId,
+        cryptoAmountScaleToUsdtDecimals(cryptoAmount)
+      );
       try {
         console.log("pass de approved", digitalP2PCanMoveFunds);
         console.log("value", cryptoAmountScaleToUsdtDecimals(cryptoAmount));
-        await digitalP2PExchangeContract
-          .processOrder(orderId, cryptoAmountScaleToUsdtDecimals(cryptoAmount))
-          .then((res) => {
-            console.log("res", res);
-            return res;
-          });
         setLogMessageSuccess("Transacción aprobada con éxito");
       } catch (e) {
         console.log("error", e);
