@@ -22,6 +22,8 @@ permissions:
 concurrency:
   group: "pages"
   cancel-in-progress: true
+
+jobs:
   # Single deploy job since we're just deploying
   deploy:
     environment:
@@ -45,6 +47,7 @@ concurrency:
           echo VITE_DIGITALP2P_POLYGON_SM_ADDRESS=${{ secrets.DIGITALP2P_POLYGON_SM_ADDRESS }} >> .env
           echo VITE_POLYGON_USDT_ADDRESS=${{ secrets.POLYGON_USDT_ADDRESS }} >> .env
           echo BRIDGE_URL=${{ secrets.BRIDGE_URL }} >> .env
+          echo VITE_DEFAULT_NETWORK=${{ secrets.DEFAULT_NETWORK }} >> .env
           echo VITE_DEFAULT_NETWORK=${{ secrets.DEFAULT_NETWORK }} >> .env
           echo VITE_ENVIRONMENT=${{ secrets.ENVIRONMENT }} >> .env
           cat .env
