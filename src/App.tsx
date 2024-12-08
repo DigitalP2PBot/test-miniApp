@@ -91,6 +91,8 @@ function App() {
       walletProvider as Eip1193Provider
     );
     const signer = await ethersProvider.getSigner();
+    console.log("digitalP2PExchangeAddress", digitalP2PExchangeAddress);
+    console.log("polygonUsdtAddress", polygonUsdtAddress);
     const usdtContract = new Contract(polygonUsdtAddress, USDTAbi, signer);
     const digitalP2PCanMoveFunds = await usdtContract.approve(
       digitalP2PExchangeAddress,
