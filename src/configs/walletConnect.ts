@@ -1,6 +1,8 @@
 import { createAppKit } from "@reown/appkit/react";
 import { polygon, polygonAmoy } from "@reown/appkit/networks";
 
+import { EthersAdapter } from "@reown/appkit-adapter-ethers";
+
 const DEFAULT_NETWORK = import.meta.env.VITE_DEFAULT_NETWORK || "polygon";
 const defaultNetwork = DEFAULT_NETWORK == "polygon" ? polygon : polygonAmoy;
 export const createWalletConnectModal = () => {
@@ -10,8 +12,8 @@ export const createWalletConnectModal = () => {
   const metadata = {
     name: "DigitalP2P Exchange",
     description: "DigitalP2P Defi Protocol",
-    url: "https://digitalp2pbot.github.io", // origin must match your domain & subdomain
-    icons: ["https://avatars.mywebsite.com/"],
+    url: "https://digitalp2pbot.github.io/miniApp/", // origin must match your domain & subdomain
+    icons: [""],
   };
 
   createAppKit({
