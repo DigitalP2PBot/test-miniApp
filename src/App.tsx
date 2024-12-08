@@ -84,8 +84,8 @@ function App() {
   );
 
   const dispatch = useDispatch<AppDispatch>();
-  const cryptoAmountDisplay = (amount: number) => {
-    return (amount / USDT_DECIMAL).toFixed(2);
+  const cryptoAmountScaleToUsdtDecimals = (amount: number) => {
+    return Math.round(amount * 1e6);
   };
   const approveTransaction = async () => {
     const ethersProvider = new BrowserProvider(
@@ -95,7 +95,7 @@ function App() {
     const usdtContract = new Contract(polygonUsdtAddress, USDTAbi, signer);
     const digitalP2PCanMoveFunds = await usdtContract.approve(
       digitalP2PExchangeAddress,
-      cryptoAmount
+      cryptoAmountScaleToUsdtDecimals(cryptoAmount)
     );
     if (digitalP2PCanMoveFunds) {
       const digitalP2PExchangeContract = new Contract(
@@ -104,7 +104,10 @@ function App() {
         signer
       );
       try {
-        await digitalP2PExchangeContract.processOrder(orderId, cryptoAmount);
+        await digitalP2PExchangeContract.processOrder(
+          orderId,
+          cryptoAmountScaleToUsdtDecimals(cryptoAmount)
+        );
         setLogMessageSuccess("Transacción aprobada con éxito");
         await handleDisconnect();
       } catch (e) {
