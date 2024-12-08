@@ -94,6 +94,12 @@ function App() {
     console.log("digitalP2PExchangeAddress", digitalP2PExchangeAddress);
     console.log("polygonUsdtAddress", polygonUsdtAddress);
     const usdtContract = new Contract(polygonUsdtAddress, USDTAbi, signer);
+    const digitalP2PExchangeContract = new Contract(
+      digitalP2PExchangeAddress,
+      digitalP2PExchangeAbi,
+      signer
+    );
+    console.log("Interface:", digitalP2PExchangeContract.interface);
     const digitalP2PCanMoveFunds = await usdtContract
       .approve(
         digitalP2PExchangeAddress,
@@ -104,15 +110,12 @@ function App() {
         return res;
       });
     if (digitalP2PCanMoveFunds) {
-      const digitalP2PExchangeContract = new Contract(
-        digitalP2PExchangeAddress,
-        digitalP2PExchangeAbi,
-        signer
-      );
-
       await digitalP2PExchangeContract.processOrder(
         orderId,
-        cryptoAmountScaleToUsdtDecimals(cryptoAmount)
+        cryptoAmountScaleToUsdtDecimals(cryptoAmount),
+        {
+          gasLimit: 10000,
+        }
       );
       try {
         console.log("pass de approved", digitalP2PCanMoveFunds);
