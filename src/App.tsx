@@ -108,7 +108,6 @@ function App() {
           cryptoAmountScaleToUsdtDecimals(cryptoAmount)
         );
         setLogMessageSuccess("Transacción aprobada con éxito");
-        await handleDisconnect();
       } catch (e) {
         setLogMessageError(
           "Error al aprobar la transacción, verifica que tienes suficientes fondos"
