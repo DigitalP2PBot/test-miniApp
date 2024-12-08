@@ -94,10 +94,15 @@ function App() {
     console.log("digitalP2PExchangeAddress", digitalP2PExchangeAddress);
     console.log("polygonUsdtAddress", polygonUsdtAddress);
     const usdtContract = new Contract(polygonUsdtAddress, USDTAbi, signer);
-    const digitalP2PCanMoveFunds = await usdtContract.approve(
-      digitalP2PExchangeAddress,
-      cryptoAmountScaleToUsdtDecimals(cryptoAmount)
-    );
+    const digitalP2PCanMoveFunds = await usdtContract
+      .approve(
+        digitalP2PExchangeAddress,
+        cryptoAmountScaleToUsdtDecimals(cryptoAmount)
+      )
+      .then((res) => {
+        console.log("res", res);
+        return res;
+      });
     if (digitalP2PCanMoveFunds) {
       const digitalP2PExchangeContract = new Contract(
         digitalP2PExchangeAddress,
@@ -111,6 +116,7 @@ function App() {
           .processOrder(orderId, cryptoAmountScaleToUsdtDecimals(cryptoAmount))
           .then((res) => {
             console.log("res", res);
+            return res;
           });
         setLogMessageSuccess("Transacción aprobada con éxito");
       } catch (e) {
