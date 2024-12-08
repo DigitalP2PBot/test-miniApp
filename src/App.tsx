@@ -45,7 +45,6 @@ const digitalP2PExchangeAbi = [
 ];
 WebApp.setHeaderColor("#1a1a1a");
 function App() {
-  const USDT_DECIMAL = 1_000_000;
   const { close } = useAppKit();
   const { walletProvider } = useAppKitProvider("eip155");
   const { disconnect } = useDisconnect();
