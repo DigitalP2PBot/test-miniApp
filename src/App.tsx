@@ -230,7 +230,7 @@ function App() {
               </p>
 
               <p className="text-customGrayText mt-0 mr-0 mb-4 ml-0 text-left">
-                {cyprtoAmountCopy}: {cryptoAmountDisplay(cryptoAmount)}
+                {cyprtoAmountCopy}: {cryptoAmount}
               </p>
               {env === "dev" && (
                 <p className="text-customGrayText mt-0 mr-0 mb-4 ml-0 text-left">
