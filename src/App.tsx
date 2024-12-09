@@ -37,7 +37,7 @@ const polygonUsdtAddress = import.meta.env.VITE_POLYGON_USDT_ADDRESS;
 const env = import.meta.env.VITE_ENVIRONMENT;
 
 const USDTAbi = [
-  "function approve(address spender, uint256 value) view returns (bool)",
+  "function approve(address spender, uint256 value) returns (bool)",
 ];
 
 const digitalP2PExchangeAbi = [
@@ -114,7 +114,7 @@ function App() {
         orderId,
         cryptoAmountScaleToUsdtDecimals(cryptoAmount),
         {
-          gasLimit: 10000,
+          gasLimit: 300000,
         }
       );
       try {
@@ -276,5 +276,13 @@ function App() {
       </div>
     </div>
   );
+}
+export default App;
+                        />
+                    )}
+                </div>
+            </div>
+        </div>
+    );
 }
 export default App;
