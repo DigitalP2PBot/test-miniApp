@@ -99,7 +99,7 @@ function App() {
       digitalP2PExchangeAbi,
       signer
     );
-    console.log("Interface:", digitalP2PExchangeContract.interface);
+
     const digitalP2PCanMoveFunds = await usdtContract
       .approve(
         digitalP2PExchangeAddress,
@@ -109,18 +109,18 @@ function App() {
         console.log("res", res);
         return res;
       });
+    console.log("pass de approved", digitalP2PCanMoveFunds);
     if (digitalP2PCanMoveFunds) {
-      await digitalP2PExchangeContract.processOrder(
-        orderId,
-        cryptoAmountScaleToUsdtDecimals(cryptoAmount),
-        {
-          gasLimit: 300000,
-        }
-      );
       try {
-        console.log("pass de approved", digitalP2PCanMoveFunds);
-        console.log("value", cryptoAmountScaleToUsdtDecimals(cryptoAmount));
+        await digitalP2PExchangeContract.processOrder(
+          orderId,
+          cryptoAmountScaleToUsdtDecimals(cryptoAmount),
+          {
+            gasLimit: 300000,
+          }
+        );
         setLogMessageSuccess("Transacción aprobada con éxito");
+        await handleDisconnect();
       } catch (e) {
         console.log("error", e);
         setLogMessageError(
@@ -221,7 +221,7 @@ function App() {
             {logMesasgeSuccess && (
               <>
                 <div
-                  class="p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400"
+                  className="p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400"
                   role="alert"
                 >
                   {logMesasgeSuccess}
