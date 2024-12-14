@@ -1,8 +1,13 @@
 import { createAppKit } from "@reown/appkit/react";
-import { polygon, polygonAmoy } from "@reown/appkit/networks";
+import { polygon, polygonAmoy, sepolia } from "@reown/appkit/networks";
 
+const networks = {
+  polygon: polygon,
+  polygonAmoy: polygonAmoy,
+  sepolia: sepolia,
+};
 const DEFAULT_NETWORK = import.meta.env.VITE_DEFAULT_NETWORK || "polygon";
-const defaultNetwork = DEFAULT_NETWORK == "polygon" ? polygon : polygonAmoy;
+const defaultNetwork = networks[DEFAULT_NETWORK];
 export const createWalletConnectModal = () => {
   const projectId =
     import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID || ("" as string);
