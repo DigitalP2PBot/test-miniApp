@@ -90,11 +90,6 @@ function App() {
     const ethersProvider = new BrowserProvider(
       walletProvider as Eip1193Provider
     );
-    if (!window.ethereum) {
-      setLogMessageError("No se ha detectado una billetera conectada");
-      await handleDisconnect();
-      return;
-    }
     let signer = null;
     try {
       signer = await ethersProvider.getSigner();
