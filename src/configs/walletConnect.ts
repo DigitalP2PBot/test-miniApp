@@ -6,7 +6,9 @@ const networks = {
   polygonAmoy: polygonAmoy,
   sepolia: sepolia,
 };
-const DEFAULT_NETWORK = import.meta.env.VITE_DEFAULT_NETWORK || "polygon";
+type NetworkKey = keyof typeof networks;
+const DEFAULT_NETWORK =
+  (import.meta.env.VITE_DEFAULT_NETWORK as NetworkKey) || networks["polygon"];
 const defaultNetwork = networks[DEFAULT_NETWORK];
 export const createWalletConnectModal = () => {
   const projectId =
