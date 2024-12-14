@@ -93,6 +93,11 @@ function App() {
     const signer = await ethersProvider.getSigner();
     console.log("digitalP2PExchangeAddress", digitalP2PExchangeAddress);
     console.log("polygonUsdtAddress", polygonUsdtAddress);
+    if (!window.ethereum) {
+      setLogMessageError("No se ha detectado una billetera conectada");
+      await handleDisconnect();
+      return;
+    }
     const usdtContract = new Contract(polygonUsdtAddress, USDTAbi, signer);
     const digitalP2PExchangeContract = new Contract(
       digitalP2PExchangeAddress,
