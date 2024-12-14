@@ -120,7 +120,6 @@ function App() {
           }
         );
         setLogMessageSuccess("Transacción aprobada con éxito");
-        await handleDisconnect();
       } catch (e) {
         console.log("error", e);
         setLogMessageError(
