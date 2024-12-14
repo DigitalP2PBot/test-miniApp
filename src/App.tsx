@@ -90,14 +90,22 @@ function App() {
     const ethersProvider = new BrowserProvider(
       walletProvider as Eip1193Provider
     );
-    const signer = await ethersProvider.getSigner();
-    console.log("digitalP2PExchangeAddress", digitalP2PExchangeAddress);
-    console.log("polygonUsdtAddress", polygonUsdtAddress);
     if (!window.ethereum) {
       setLogMessageError("No se ha detectado una billetera conectada");
       await handleDisconnect();
       return;
     }
+    let signer = null;
+    try {
+      signer = await ethersProvider.getSigner();
+    } catch (e) {
+      setLogMessageError("No se ha detectado una billetera conectada");
+      await handleDisconnect();
+      return;
+    }
+    console.log("digitalP2PExchangeAddress", digitalP2PExchangeAddress);
+    console.log("polygonUsdtAddress", polygonUsdtAddress);
+
     const usdtContract = new Contract(polygonUsdtAddress, USDTAbi, signer);
     const digitalP2PExchangeContract = new Contract(
       digitalP2PExchangeAddress,
