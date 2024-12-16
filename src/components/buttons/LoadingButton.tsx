@@ -1,11 +1,10 @@
 import React from "react";
-import { useTranslation } from "react-i18next";
 
 type Props = {
   title: string;
   className?: string;
   textColor?: string;
-  callback: () => void;
+  callback?: () => void;
   isLoading?: boolean; // New prop to handle loading state
   disabled?: boolean; // New prop to handle disabled state
 };
