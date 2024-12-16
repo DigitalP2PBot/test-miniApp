@@ -23,7 +23,7 @@ const resources: TranslationResources = {
       walletNotConnected: "Wallet not connected",
       tokenAddress: "Polygon address (USDT)",
       digialP2PExchangeAddress: "Digital P2P Exchange Address",
-      processOrderButtonTitle: "Processing order...",
+      processOrderButtonTitle: "Moving founds...",
       transactionInfo:
         "Transaction Info! Go to your wallet and approve the transaction",
       transactionApprovedHelp:
@@ -45,7 +45,7 @@ const resources: TranslationResources = {
       walletNotConnected: "No se ha detectado una billetera conectada",
       tokenAddress: "Polygon token (USDT) ${tokenAddress}",
       digitalP2PExchangeAddress: "Dirección del contrato de intercambio",
-      processOrderButtonTitle: "Procesando orden...",
+      processOrderButtonTitle: "Moviendo fondos...",
       transactionInfo: "Ve a tu billetera y aprueba la transacción",
 
       transactionApprovedHelp:

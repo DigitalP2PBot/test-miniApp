@@ -95,6 +95,7 @@ function App() {
     const ethersProvider = new BrowserProvider(
       walletProvider as Eip1193Provider
     );
+
     let signer = null;
     try {
       signer = await ethersProvider.getSigner();
@@ -147,6 +148,9 @@ function App() {
           });
         setLogMessageSuccess(i18n.t("transactionApproved"));
         setTransactionState(TransactionState.PROCCESED);
+        setTimeout(() => {
+          telegramWebApp.close();
+        }, 5000);
       } catch (e) {
         console.log("error", e);
         setTransactionState(TransactionState.REJECTED);
@@ -274,6 +278,33 @@ function App() {
               <p className="text-customGrayText mt-0 mr-0 mb-4 ml-0 text-left">
                 {i18n.t("cryptoAmount")}: {cryptoAmount}
               </p>
+
+              {connectionStatus === walletConnectionState.CONNECTED && (
+                <>
+                  <p className="text-customGrayText mt-0 mr-0 mb-4 ml-0 text-left">
+                    Requerimos de dos transacciones para mover los fondos:
+                  </p>
+                  <p
+                    className={`text-customGrayText mt-0 mr-0 mb-4 ml-0 text-left ${
+                      transactionState == TransactionState.APPROVED ||
+                      transactionState == TransactionState.PROCCESED
+                        ? "text-orangePeel"
+                        : ""
+                    }`}
+                  >
+                    1. Transación de aprobación para mover fondos.{" "}
+                  </p>
+                  <p
+                    className={`text-customGrayText mt-0 mr-0 mb-4 ml-0 text-left ${
+                      transactionState == TransactionState.PROCCESED
+                        ? "text-orangePeel"
+                        : ""
+                    }`}
+                  >
+                    2. Transación para mover fondos.
+                  </p>
+                </>
+              )}
               {env === "dev" && (
                 <p className="text-customGrayText mt-0 mr-0 mb-4 ml-0 text-left">
                   Message log {messageLog}
