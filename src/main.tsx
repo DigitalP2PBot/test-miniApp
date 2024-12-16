@@ -16,6 +16,7 @@ import WebApp from "@twa-dev/sdk";
 // App + Styles
 import App from "./App";
 import "./index.css";
+import "./configs/i18n";
 
 // Hide the main button
 WebApp.MainButton.hide();

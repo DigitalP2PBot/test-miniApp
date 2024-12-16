@@ -13,11 +13,14 @@ import {
 import logo from "./assets/digital_p2p_logo.png";
 
 import PrimaryButton from "./components/buttons/PrimaryButton";
+import LoadingButton from "./components/buttons/LoadingButton";
 
 import WalletConnectModal from "./components/connectors/WalletConnectModal";
 
 import { useDispatch, useSelector } from "react-redux";
 import { setConnectionState } from "./redux/connectionSlice";
+import i18n from "./configs/i18n";
+import i18next from "i18next";
 
 enum View {
   LANDING = 0,
@@ -30,6 +33,15 @@ enum walletConnectionState {
   DISCONNECTED = "disconnected",
   CONNECTED = "connected",
 }
+
+enum TransactionState {
+  PENDING = "pending",
+  PROCESSING = "processing",
+  APPROVED = "approved",
+  PROCCESED = "processed",
+  REJECTED = "rejected",
+}
+
 const digitalP2PExchangeAddress = import.meta.env
   .VITE_DIGITALP2P_POLYGON_SM_ADDRESS;
 
@@ -57,6 +69,9 @@ function App() {
   const [connectionStatus, setConnectionStatus] =
     useState<AccountControllerState["status"]>();
   const [messageLog, setMessageLog] = useState<string>("");
+  const [transactionState, setTransactionState] = useState<TransactionState>(
+    TransactionState.PENDING
+  );
 
   const telegramWebApp = window.Telegram.WebApp;
 
@@ -65,19 +80,8 @@ function App() {
   const cryptoAmount: number = parseFloat(
     urlParams.get("cryptoAmount") as string
   );
-  const summaryCopy =
-    (urlParams.get("summaryCopy") as string) ?? "Resumen de la orden";
-  const buttonTitle =
-    (urlParams.get("buttonTitleCopy") as string) ?? "Conectar billetera";
-  const orderCopy = (urlParams.get("orderCopy") as string) ?? "Orden id";
-  const cyprtoAmountCopy =
-    (urlParams.get("cryptoAmountCopy") as string) ?? "Usdt a transferir";
-  const approveTransactionCopy =
-    (urlParams.get("approveTransactionCopy") as string) ?? "Depositar fondos";
-  const walletAddressCopy =
-    (urlParams.get("walletAddressCopy") as string) ??
-    "Dirección de tu billetera";
-
+  const lang = urlParams.get("lang") as string;
+  i18n.changeLanguage(lang ?? "es");
   const connectionState = useSelector(
     (state: RootState) => state.connection.connectionState
   );
@@ -87,6 +91,7 @@ function App() {
     return Math.round(amount * 1e6);
   };
   const approveTransaction = async () => {
+    setTransactionState(TransactionState.PROCESSING);
     const ethersProvider = new BrowserProvider(
       walletProvider as Eip1193Provider
     );
@@ -94,50 +99,62 @@ function App() {
     try {
       signer = await ethersProvider.getSigner();
     } catch (e) {
-      setLogMessageError("No se ha detectado una billetera conectada");
+      console.log("error get signer", e);
+      setLogMessageError(i18n.t("walletNotConnected"));
+      setTransactionState(TransactionState.PENDING);
       await handleDisconnect();
       return;
     }
-    console.log("digitalP2PExchangeAddress", digitalP2PExchangeAddress);
     console.log("polygonUsdtAddress", polygonUsdtAddress);
 
     const usdtContract = new Contract(polygonUsdtAddress, USDTAbi, signer);
+
     const digitalP2PExchangeContract = new Contract(
       digitalP2PExchangeAddress,
       digitalP2PExchangeAbi,
       signer
     );
 
-    const digitalP2PCanMoveFunds = await usdtContract
-      .approve(
-        digitalP2PExchangeAddress,
-        cryptoAmountScaleToUsdtDecimals(cryptoAmount)
-      )
-      .then((res) => {
-        console.log("res", res);
-        return res;
-      });
-    console.log("pass de approved", digitalP2PCanMoveFunds);
+    let digitalP2PCanMoveFunds = false;
+    try {
+      digitalP2PCanMoveFunds = await usdtContract
+        .approve(
+          digitalP2PExchangeAddress,
+          cryptoAmountScaleToUsdtDecimals(cryptoAmount)
+        )
+        .then((res) => {
+          console.log("transaction approved", res);
+          return res;
+        });
+      setTransactionState(TransactionState.APPROVED);
+    } catch (e) {
+      console.log("error approving transaction", e);
+      setTransactionState(TransactionState.PENDING);
+      setLogMessageError("Erro");
+    }
     if (digitalP2PCanMoveFunds) {
       try {
-        await digitalP2PExchangeContract.processOrder(
-          orderId,
-          cryptoAmountScaleToUsdtDecimals(cryptoAmount),
-          {
-            gasLimit: 300000,
-          }
-        );
-        setLogMessageSuccess("Transacción aprobada con éxito");
+        await digitalP2PExchangeContract
+          .processOrder(
+            orderId,
+            cryptoAmountScaleToUsdtDecimals(cryptoAmount),
+            {
+              gasLimit: 300000,
+            }
+          )
+          .then((res) => {
+            console.log("transaction processed", res);
+          });
+        setLogMessageSuccess(i18n.t("transactionApproved"));
+        setTransactionState(TransactionState.PROCCESED);
       } catch (e) {
         console.log("error", e);
-        setLogMessageError(
-          "Error al aprobar la transacción, verifica que tienes suficientes fondos"
-        );
+        setTransactionState(TransactionState.REJECTED);
+        setLogMessageError(i18n.t("errorTransactionProcessOrder"));
       }
     } else {
-      setLogMessageError(
-        "Debes aprobar la transacción para continuar con el intercambio"
-      );
+      setTransactionState(TransactionState.PENDING);
+      setLogMessageError(i18n.t("errorApprovingTransaction"));
     }
   };
   const disconnectUser = async () => {
@@ -155,7 +172,6 @@ function App() {
     address?: string
     //selectedNetworkId: CaipNetworkId
   ) => {
-    console.log("handle connect ", isConnected, status, address);
     if (isConnected) {
       dispatch(setConnectionState(walletConnectionState.CONNECTED));
       setView(View.CONNECTED);
@@ -213,7 +229,7 @@ function App() {
         <div className="components-container mb-2">
           <div className="flex flex-col bg-white pt-4 pr-8 pb-8 pl-8 gap-4 rounded-t-3xl rounded-b-xl shadow-custom-white">
             <div>
-              <h2 className="headline">DigitalP2P Exchange</h2>
+              <h2 className="headline text-oceanGreen">DigitalP2P Exchange</h2>
             </div>
             {logMesasgeError && (
               <>
@@ -239,34 +255,68 @@ function App() {
               {connectionStatus === walletConnectionState.CONNECTED && (
                 <>
                   <p className="text-customGrayText mt-0 mr-0 mb-4 ml-0 text-left">
-                    {walletAddressCopy}: {userWalletAddress}
+                    {i18n.t("digitalP2PExchangeAddress")}:{" "}
+                    {digitalP2PExchangeAddress}
+                  </p>
+                  <p className="text-customGrayText mt-0 mr-0 mb-4 ml-0 text-left">
+                    {i18n.t("walletAddress")}: {userWalletAddress}
                   </p>
                 </>
               )}
               <p className="text-customGrayText mt-0 mr-0 mb-4 ml-0 text-left">
-                {summaryCopy}:
+                {i18n.t("summaryOrder")}:
               </p>
 
               <p className="text-customGrayText mt-0 mr-0 mb-4 ml-0 text-left">
-                {orderCopy}: {orderId}
+                {i18n.t("orderId")}: {orderId}
               </p>
 
               <p className="text-customGrayText mt-0 mr-0 mb-4 ml-0 text-left">
-                {cyprtoAmountCopy}: {cryptoAmount}
+                {i18n.t("cryptoAmount")}: {cryptoAmount}
               </p>
               {env === "dev" && (
                 <p className="text-customGrayText mt-0 mr-0 mb-4 ml-0 text-left">
                   Message log {messageLog}
                 </p>
               )}
+
+              {transactionState === TransactionState.PROCESSING && (
+                <div className="p-4 mb-4 text-sm text-oceanGreen rounded-lg bg-azureishWhite dark:bg-dimGray dark:text-orangePeel">
+                  <span className="font-medium">
+                    {i18n.t("transactionInfo")}
+                  </span>{" "}
+                </div>
+              )}
+
+              {transactionState === TransactionState.APPROVED && (
+                <div className="p-4 mb-4 text-sm text-oceanGreen rounded-lg bg-azureishWhite dark:bg-dimGray dark:text-orangePeel">
+                  <span className="font-medium">
+                    {i18n.t("transactionApprovedHelp")}
+                  </span>{" "}
+                </div>
+              )}
             </div>
           </div>
           {view === View.CONNECTED && (
             <>
-              <PrimaryButton
-                title={approveTransactionCopy}
-                callback={approveTransaction}
-              />
+              {transactionState === TransactionState.PENDING && (
+                <PrimaryButton
+                  title={i18n.t("depositFund")}
+                  callback={approveTransaction}
+                />
+              )}
+              {transactionState === TransactionState.PROCESSING && (
+                <LoadingButton
+                  title={i18next.t("processing")}
+                  isLoading={true}
+                />
+              )}
+              {transactionState === TransactionState.APPROVED && (
+                <LoadingButton
+                  title={i18next.t("processOrderButtonTitle")}
+                  isLoading={true}
+                />
+              )}
               {env === "dev" && (
                 <PrimaryButton title="Disconnect" callback={handleDisconnect} />
               )}
@@ -274,7 +324,7 @@ function App() {
           )}
           {view === View.CONNECT && (
             <WalletConnectModal
-              title={buttonTitle}
+              title={i18n.t("buttonConnectWalleTitle")}
               onCallback={handleConnect}
               icon={logo}
             />
