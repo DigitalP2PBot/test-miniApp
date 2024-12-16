@@ -47,6 +47,7 @@ const digitalP2PExchangeAddress = import.meta.env
 
 const polygonUsdtAddress = import.meta.env.VITE_POLYGON_USDT_ADDRESS;
 const env = import.meta.env.VITE_ENVIRONMENT;
+const telegramCloseAppTimeOut = 4000;
 
 const USDTAbi = [
   "function approve(address spender, uint256 value) returns (bool)",
@@ -150,7 +151,7 @@ function App() {
         setTransactionState(TransactionState.PROCCESED);
         setTimeout(() => {
           telegramWebApp.close();
-        }, 5000);
+        }, telegramCloseAppTimeOut);
       } catch (e) {
         console.log("error", e);
         setTransactionState(TransactionState.REJECTED);
