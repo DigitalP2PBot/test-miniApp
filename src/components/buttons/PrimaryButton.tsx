@@ -15,7 +15,7 @@ const PrimaryButton: React.FC<Props> = ({
 }) => {
   return (
     <button
-      className={`flex items-center justify-center bg-dimGray w-full h-12 text-${textColor} py-3 px-5 rounded-lg border-dimGray border-1 text-base font-semibold text-center ${className} active:bg-dimGray-400`}
+      className={`flex items-center justify-center bg-oceanGreen w-full h-12 text-${textColor} py-3 px-5 rounded-lg border-oceanGreen border-1 text-base font-semibold text-center ${className} active:bg-oceanGreen-400`}
       onClick={callback}
     >
       <span>{title}</span>

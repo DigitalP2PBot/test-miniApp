@@ -14,8 +14,13 @@ import logo from "./assets/digital_p2p_logo.png";
 
 import PrimaryButton from "./components/buttons/PrimaryButton";
 import LoadingButton from "./components/buttons/LoadingButton";
+import GhostButton from "./components/buttons/GhostButton";
 
 import WalletConnectModal from "./components/connectors/WalletConnectModal";
+
+import LayoutHeader from "./components/organism/LayuotHeader";
+import InfoLabel from "./components/organism/InfoLabel";
+import InfoCard from "./components/organism/InfoCard";
 
 import { useDispatch, useSelector } from "react-redux";
 import { setConnectionState } from "./redux/connectionSlice";
@@ -229,89 +234,37 @@ function App() {
     setMessageLog(logMessage);
   }, []);
   return (
-    <div className="flex flex-col h-full min-h-screen w-screen rounded-xl bg-customGrayWallet">
-      <div className="flex flex-col flex-grow min-h-full justify-end">
-        <div className="components-container mb-2">
-          <div className="flex flex-col bg-white pt-4 pr-8 pb-8 pl-8 gap-4 rounded-t-3xl rounded-b-xl shadow-custom-white">
-            <div>
-              <h2 className="headline text-oceanGreen">DigitalP2P Exchange</h2>
-            </div>
-            {logMesasgeError && (
-              <>
-                <div
-                  className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
-                  role="alert"
-                >
-                  {logMesasgeError}
-                </div>
-              </>
-            )}
-            {logMesasgeSuccess && (
-              <>
-                <div
-                  className="p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400"
-                  role="alert"
-                >
-                  {logMesasgeSuccess}
-                </div>
-              </>
-            )}
-            <div>
-              {connectionStatus === walletConnectionState.CONNECTED && (
-                <>
-                  <p className="text-customGrayText mt-0 mr-0 mb-4 ml-0 text-left">
-                    {i18n.t("digitalP2PExchangeAddress")}:{" "}
-                    {digitalP2PExchangeAddress}
-                  </p>
-                  <p className="text-customGrayText mt-0 mr-0 mb-4 ml-0 text-left">
-                    {i18n.t("walletAddress")}: {userWalletAddress}
-                  </p>
-                </>
-              )}
-              <p className="text-customGrayText mt-0 mr-0 mb-4 ml-0 text-left">
-                {i18n.t("summaryOrder")}:
-              </p>
-
-              <p className="text-customGrayText mt-0 mr-0 mb-4 ml-0 text-left">
-                {i18n.t("orderId")}: {orderId}
-              </p>
-
-              <p className="text-customGrayText mt-0 mr-0 mb-4 ml-0 text-left">
-                {i18n.t("cryptoAmount")}: {cryptoAmount}
-              </p>
-
-              {connectionStatus === walletConnectionState.CONNECTED && (
-                <>
-                  <p className="text-customGrayText mt-0 mr-0 mb-4 ml-0 text-left">
-                    Requerimos de dos transacciones para mover los fondos:
-                  </p>
-                  <p
-                    className={`text-customGrayText mt-0 mr-0 mb-4 ml-0 text-left ${
-                      transactionState == TransactionState.APPROVED ||
-                      transactionState == TransactionState.PROCCESED
-                        ? "text-orangePeel"
-                        : ""
-                    }`}
-                  >
-                    1. Transación de aprobación para mover fondos.{" "}
-                  </p>
-                  <p
-                    className={`text-customGrayText mt-0 mr-0 mb-4 ml-0 text-left ${
-                      transactionState == TransactionState.PROCCESED
-                        ? "text-orangePeel"
-                        : ""
-                    }`}
-                  >
-                    2. Transación para mover fondos.
-                  </p>
-                </>
-              )}
+    <div className="bg-azureishWhite">
+      <LayoutHeader />
+      <main className="flex flex-col h-full min-h-screen w-screen rounded-xl">
+        <div className="flex flex-col flex-grow min-h-full justify-end">
+          <div className="components-container mb-2">
+            <div className="flex flex-col bg-white pt-4 pr-8 pb-8 pl-8 gap-4 rounded-t-3xl rounded-b-xl shadow-custom-white">
               {env === "dev" && (
                 <p className="text-customGrayText mt-0 mr-0 mb-4 ml-0 text-left">
                   Message log {messageLog}
                 </p>
               )}
-
+              {logMesasgeError && (
+                <>
+                  <div
+                    className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+                    role="alert"
+                  >
+                    {logMesasgeError}
+                  </div>
+                </>
+              )}
+              {logMesasgeSuccess && (
+                <>
+                  <div
+                    className="p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400"
+                    role="alert"
+                  >
+                    {logMesasgeSuccess}
+                  </div>
+                </>
+              )}
               {transactionState === TransactionState.PROCESSING && (
                 <div className="p-4 mb-4 text-sm text-oceanGreen rounded-lg bg-azureishWhite dark:bg-dimGray dark:text-orangePeel">
                   <span className="font-medium">
@@ -327,42 +280,89 @@ function App() {
                   </span>{" "}
                 </div>
               )}
-            </div>
+              <div>
+                {connectionStatus === walletConnectionState.CONNECTED && (
+                  <>
+                    <InfoLabel label={i18n.t("digitalP2PExchangeAddress")} content={digitalP2PExchangeAddress}/>
+
+                    <InfoLabel label={i18n.t("walletAddress")} content={userWalletAddress} />
+                  </>
+                )}
+                <h3>
+                  {i18n.t("summaryOrder")}:
+                </h3>
+
+                <InfoLabel label={i18n.t("orderId")} content={orderId} ></InfoLabel>
+
+                <InfoLabel label={i18n.t("cryptoAmount")} content={String(cryptoAmount)} ></InfoLabel>
+
+                {connectionStatus === walletConnectionState.CONNECTED && (
+                  <InfoCard content={
+                    <>
+                    
+                      <p className="text-customGrayAlternative mt-0 mr-0 mb-4 ml-0 text-left">
+                        Requerimos de dos transacciones para mover los fondos:
+                      </p>
+                      <p
+                        className={`text-customGrayAlternative mt-0 mr-0 mb-4 ml-0 text-left ${
+                          transactionState == TransactionState.APPROVED ||
+                          transactionState == TransactionState.PROCCESED
+                            ? "text-orangePeel"
+                            : ""
+                        }`}
+                      >
+                        1. Transación de aprobación para mover fondos.{" "}
+                      </p>
+                      <p
+                        className={`text-customGrayAlternative mt-0 mr-0 mb-4 ml-0 text-left ${
+                          transactionState == TransactionState.PROCCESED
+                            ? "text-orangePeel"
+                            : ""
+                        }`}
+                      >
+                        2. Transación para mover fondos.
+                      </p>
+                    </>
+                  } />
+                )}
+
+              </div>
+            </div>            
+            {view === View.CONNECTED && (
+              <footer className="flex flex-col gap-4 p-8 pt-0 bg-white rounded-xl shadow-custom-white">
+                {transactionState === TransactionState.PENDING && (
+                  <PrimaryButton
+                    title={i18n.t("depositFund")}
+                    callback={approveTransaction}
+                  />
+                )}
+                {transactionState === TransactionState.PROCESSING && (
+                  <LoadingButton
+                    title={i18next.t("processing")}
+                    isLoading={true}
+                  />
+                )}
+                {transactionState === TransactionState.APPROVED && (
+                  <LoadingButton
+                    title={i18next.t("processOrderButtonTitle")}
+                    isLoading={true}
+                  />
+                )}
+                {env === "dev" && (
+                  <GhostButton title="Disconnect" callback={handleDisconnect} />
+                )}
+              </footer>
+            )}
+            {view === View.CONNECT && (
+              <WalletConnectModal
+                title={i18n.t("buttonConnectWalleTitle")}
+                onCallback={handleConnect}
+                icon={logo}
+              />
+            )}
           </div>
-          {view === View.CONNECTED && (
-            <>
-              {transactionState === TransactionState.PENDING && (
-                <PrimaryButton
-                  title={i18n.t("depositFund")}
-                  callback={approveTransaction}
-                />
-              )}
-              {transactionState === TransactionState.PROCESSING && (
-                <LoadingButton
-                  title={i18next.t("processing")}
-                  isLoading={true}
-                />
-              )}
-              {transactionState === TransactionState.APPROVED && (
-                <LoadingButton
-                  title={i18next.t("processOrderButtonTitle")}
-                  isLoading={true}
-                />
-              )}
-              {env === "dev" && (
-                <PrimaryButton title="Disconnect" callback={handleDisconnect} />
-              )}
-            </>
-          )}
-          {view === View.CONNECT && (
-            <WalletConnectModal
-              title={i18n.t("buttonConnectWalleTitle")}
-              onCallback={handleConnect}
-              icon={logo}
-            />
-          )}
         </div>
-      </div>
+      </main>
     </div>
   );
 }

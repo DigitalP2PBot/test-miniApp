@@ -35,6 +35,9 @@ export default {
       gridTemplateColumns: {
         "custom-1-3-1": "1fr 3fr 1fr",
       },
+      spacing: {
+        "25v": "25vh",
+      }
     },
   },
   plugins: [],
