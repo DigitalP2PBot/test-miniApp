@@ -9,7 +9,6 @@ import { AccountControllerState } from "@reown/appkit-core";
 import ConnectButton from "../buttons/ConnectButton";
 type Props = {
   title: string;
-  icon: string;
   onCallback: (
     isConnected: boolean,
     status: AccountControllerState["status"],
@@ -17,7 +16,7 @@ type Props = {
   ) => void;
 };
 
-const WalletConnectModal: React.FC<Props> = ({ title, icon, onCallback }) => {
+const WalletConnectModal: React.FC<Props> = ({ title, onCallback }) => {
   const { open } = useAppKit();
   const { selectedNetworkId } = useAppKitState();
   const { address, isConnected, status } = useAppKitAccount();
@@ -35,7 +34,7 @@ const WalletConnectModal: React.FC<Props> = ({ title, icon, onCallback }) => {
   }, [selectedNetworkId, onCallback, address, isConnected, status]);
   return (
     <>
-      <ConnectButton title={title} icon={icon} callback={connect} />
+      <ConnectButton title={title} callback={connect} />
     </>
   );
 };

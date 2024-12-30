@@ -248,7 +248,7 @@ function App() {
               {logMesasgeError && (
                 <>
                   <div
-                    className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+                    className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 font-medium"
                     role="alert"
                   >
                     {logMesasgeError}
@@ -258,7 +258,7 @@ function App() {
               {logMesasgeSuccess && (
                 <>
                   <div
-                    className="p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400"
+                    className="p-4 mb-4 text-sm text-oceanGreen rounded-lg bg-azureishWhite dark:bg-gray-800 dark:text-green-400 font-medium"
                     role="alert"
                   >
                     {logMesasgeSuccess}
@@ -328,8 +328,9 @@ function App() {
 
               </div>
             </div>            
-            {view === View.CONNECTED && (
-              <footer className="flex flex-col gap-4 p-8 pt-0 bg-white rounded-xl shadow-custom-white">
+            <footer className="flex flex-col gap-4 p-8 pt-0 bg-white rounded-xl shadow-custom-white">
+              {view === View.CONNECTED && (
+                <>
                 {transactionState === TransactionState.PENDING && (
                   <PrimaryButton
                     title={i18n.t("depositFund")}
@@ -351,15 +352,15 @@ function App() {
                 {env === "dev" && (
                   <GhostButton title="Disconnect" callback={handleDisconnect} />
                 )}
-              </footer>
-            )}
-            {view === View.CONNECT && (
-              <WalletConnectModal
+                </>
+              )}
+              {view === View.CONNECT && (
+                <WalletConnectModal
                 title={i18n.t("buttonConnectWalleTitle")}
                 onCallback={handleConnect}
-                icon={logo}
-              />
-            )}
+                />
+              )}
+            </footer>
           </div>
         </div>
       </main>
