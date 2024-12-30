@@ -234,11 +234,11 @@ function App() {
     setMessageLog(logMessage);
   }, []);
   return (
-    <div className="bg-azureishWhite">
+    <div className="bg-azureishWhite min-h-screen">
       <LayoutHeader />
-      <main className="flex flex-col h-full min-h-screen w-screen rounded-xl">
+      <main className="flex flex-col h-80v w-screen rounded-xl">
         <div className="flex flex-col flex-grow min-h-full justify-end">
-          <div className="components-container mb-2">
+          <div className="components-container">
             <div className="flex flex-col bg-white pt-4 pr-8 pb-8 pl-8 gap-4 rounded-t-3xl rounded-b-xl shadow-custom-white">
               {env === "dev" && (
                 <p className="text-customGrayText mt-0 mr-0 mb-4 ml-0 text-left">

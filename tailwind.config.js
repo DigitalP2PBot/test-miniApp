@@ -36,7 +36,8 @@ export default {
         "custom-1-3-1": "1fr 3fr 1fr",
       },
       spacing: {
-        "25v": "25vh",
+        "20v": "20vh",
+        "80v": "80vh",
       }
     },
   },

@@ -1,10 +1,10 @@
 import React from 'react';
-import svgLogo from '../../assets/LOGO CLARO.svg';
+import pngLogo from '../../assets/squared_logo.png';
 
 const LayoutHeader: React.FC<object> = () => {
     return (
-        <header className="h-25v">
-            <img src={svgLogo} alt="logo" className="h-full m-auto"/>
+        <header className="h-20v p-8">
+            <img src={pngLogo} alt="logo" className="h-full m-auto"/>
         </header>
     );
 };
