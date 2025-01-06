@@ -12,7 +12,8 @@ type Props = {
   onCallback: (
     isConnected: boolean,
     status: AccountControllerState["status"],
-    address?: string
+    address?: string,
+    selectidNetworkId?: string
   ) => void;
 };
 
@@ -28,7 +29,7 @@ const WalletConnectModal: React.FC<Props> = ({ title, onCallback }) => {
   };
   useEffect(() => {
     const setupProvider = () => {
-      onCallback(isConnected, status, address);
+      onCallback(isConnected, status, address, selectedNetworkId);
     };
     setupProvider();
   }, [selectedNetworkId, onCallback, address, isConnected, status]);

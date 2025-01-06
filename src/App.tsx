@@ -10,8 +10,6 @@ import {
   useAppKit,
 } from "@reown/appkit/react";
 
-import logo from "./assets/digital_p2p_logo.png";
-
 import PrimaryButton from "./components/buttons/PrimaryButton";
 import LoadingButton from "./components/buttons/LoadingButton";
 import GhostButton from "./components/buttons/GhostButton";
@@ -21,6 +19,7 @@ import WalletConnectModal from "./components/connectors/WalletConnectModal";
 import LayoutHeader from "./components/organism/LayuotHeader";
 import InfoLabel from "./components/organism/InfoLabel";
 import InfoCard from "./components/organism/InfoCard";
+import StatusLabel from "./components/organism/StatusLabel";
 
 import { useDispatch, useSelector } from "react-redux";
 import { setConnectionState } from "./redux/connectionSlice";
@@ -78,6 +77,7 @@ function App() {
   const [transactionState, setTransactionState] = useState<TransactionState>(
     TransactionState.PENDING
   );
+  const [networkId, setNetwotkId] = useState<string | undefined>("");
 
   const telegramWebApp = window.Telegram.WebApp;
 
@@ -179,8 +179,8 @@ function App() {
   const handleConnect = (
     isConnected: boolean,
     status: AccountControllerState["status"],
-    address?: string
-    //selectedNetworkId: CaipNetworkId
+    address?: string,
+    selectedNetworkId?: string
   ) => {
     if (isConnected) {
       dispatch(setConnectionState(walletConnectionState.CONNECTED));
@@ -191,6 +191,7 @@ function App() {
     }
     setWalletAddress(address);
     setConnectionStatus(status);
+    setNetwotkId(selectedNetworkId);
   };
 
   // Handle MainButton changes on view change
@@ -283,12 +284,12 @@ function App() {
               <div>
                 {connectionStatus === walletConnectionState.CONNECTED && (
                   <>
-                    <InfoLabel label={i18n.t("digitalP2PExchangeAddress")} content={digitalP2PExchangeAddress}/>
+                    <InfoLabel label={i18n.t("networkId")} content={networkId}/>
 
                     <InfoLabel label={i18n.t("walletAddress")} content={userWalletAddress} />
                   </>
                 )}
-                <h3>
+                <h3 className="text-xl">
                   {i18n.t("summaryOrder")}:
                 </h3>
 
@@ -297,31 +298,33 @@ function App() {
                 <InfoLabel label={i18n.t("cryptoAmount")} content={String(cryptoAmount)} ></InfoLabel>
 
                 {connectionStatus === walletConnectionState.CONNECTED && (
-                  <InfoCard content={
+                  <InfoCard type="warning" content={
                     <>
                     
-                      <p className="text-customGrayAlternative mt-0 mr-0 mb-4 ml-0 text-left">
+                      <h5 className="mt-0 mr-0 mb-4 ml-0 text-left">
                         Requerimos de dos transacciones para mover los fondos:
-                      </p>
-                      <p
-                        className={`text-customGrayAlternative mt-0 mr-0 mb-4 ml-0 text-left ${
-                          transactionState == TransactionState.APPROVED ||
-                          transactionState == TransactionState.PROCCESED
-                            ? "text-orangePeel"
-                            : ""
-                        }`}
-                      >
-                        1. Transación de aprobación para mover fondos.{" "}
-                      </p>
-                      <p
-                        className={`text-customGrayAlternative mt-0 mr-0 mb-4 ml-0 text-left ${
-                          transactionState == TransactionState.PROCCESED
-                            ? "text-orangePeel"
-                            : ""
-                        }`}
-                      >
-                        2. Transación para mover fondos.
-                      </p>
+                      </h5>
+                      <StatusLabel
+                        content="Transación de aprobación para mover fondos."
+                        type={
+                          transactionState == TransactionState.APPROVED || 
+                          transactionState == TransactionState.PROCCESED?
+                            "success":
+                          transactionState == TransactionState.PROCESSING
+                            ? "pending"
+                            : "info"
+                        }
+                      />
+                      <StatusLabel
+                        content="Transación para mover fondos."
+                        type={
+                          transactionState == TransactionState.PROCCESED?
+                            "success" : 
+                          transactionState == TransactionState.APPROVED
+                            ? "pending"                          
+                            : "info"
+                        }
+                      />
                     </>
                   } />
                 )}
