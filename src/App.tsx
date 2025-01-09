@@ -42,6 +42,7 @@ enum TransactionState {
   PENDING = "pending",
   PROCESSING = "processing",
   APPROVED = "approved",
+  NOT_APPROVED = "not_approved",
   PROCCESED = "processed",
   REJECTED = "rejected",
 }
@@ -134,10 +135,13 @@ function App() {
           return res;
         });
       setTransactionState(TransactionState.APPROVED);
-    } catch (e) {
+    } catch (e: any) {
+      let errorMessage = "errorApprovingTransaction";
+      if(e.reason === "rejected") errorMessage = "errorTransactionNotApproved";
       console.log("error approving transaction", e);
-      setTransactionState(TransactionState.PENDING);
-      setLogMessageError("Erro");
+      setTransactionState(TransactionState.NOT_APPROVED);
+      setLogMessageError(i18n.t(errorMessage));
+      return;
     }
     if (digitalP2PCanMoveFunds) {
       try {
@@ -157,10 +161,12 @@ function App() {
         setTimeout(() => {
           telegramWebApp.close();
         }, telegramCloseAppTimeOut);
-      } catch (e) {
+      } catch (e: any) {
         console.log("error", e);
+        let errorMessage = "errorTransactionProcessOrder";
+        if(e.reason === "rejected") errorMessage = "errorTransactionRejected";
         setTransactionState(TransactionState.REJECTED);
-        setLogMessageError(i18n.t("errorTransactionProcessOrder"));
+        setLogMessageError(i18n.t(errorMessage));
       }
     } else {
       setTransactionState(TransactionState.PENDING);
@@ -298,31 +304,36 @@ function App() {
                 <InfoLabel label={i18n.t("cryptoAmount")} content={String(cryptoAmount)} ></InfoLabel>
 
                 {connectionStatus === walletConnectionState.CONNECTED && (
-                  <InfoCard type="warning" content={
+                  <InfoCard content={
                     <>
                     
                       <h5 className="mt-0 mr-0 mb-4 ml-0 text-left">
-                        Requerimos de dos transacciones para mover los fondos:
+                        {i18n.t("transactionTitle")}:
                       </h5>
                       <StatusLabel
-                        content="Transación de aprobación para mover fondos."
+                        content={i18n.t("transactionToApprove")}
                         type={
                           transactionState == TransactionState.APPROVED || 
-                          transactionState == TransactionState.PROCCESED?
+                          transactionState == TransactionState.PROCCESED ||
+                          transactionState == TransactionState.REJECTED?
                             "success":
-                          transactionState == TransactionState.PROCESSING
-                            ? "pending"
+                          transactionState == TransactionState.PROCESSING?
+                            "pending" :
+                          transactionState == TransactionState.NOT_APPROVED?
+                            "error"
                             : "info"
                         }
                       />
                       <StatusLabel
-                        content="Transación para mover fondos."
+                        content={i18n.t("transactionToMove")}
                         type={
                           transactionState == TransactionState.PROCCESED?
                             "success" : 
                           transactionState == TransactionState.APPROVED
-                            ? "pending"                          
-                            : "info"
+                            ? "pending" :
+                            transactionState == TransactionState.REJECTED?
+                              "error"                      
+                              : "info"
                         }
                       />
                     </>
