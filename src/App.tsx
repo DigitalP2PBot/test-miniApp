@@ -19,6 +19,7 @@ import WalletConnectModal from "./components/connectors/WalletConnectModal";
 import LayoutHeader from "./components/organism/LayuotHeader";
 import InfoLabel from "./components/organism/InfoLabel";
 import InfoCard from "./components/organism/InfoCard";
+import StatusLabel from "./components/organism/StatusLabel";
 
 import { useDispatch, useSelector } from "react-redux";
 import { setConnectionState } from "./redux/connectionSlice";
@@ -41,6 +42,7 @@ enum TransactionState {
   PENDING = "pending",
   PROCESSING = "processing",
   APPROVED = "approved",
+  NOT_APPROVED = "not_approved",
   PROCCESED = "processed",
   REJECTED = "rejected",
 }
@@ -72,6 +74,7 @@ function App() {
   const [transactionState, setTransactionState] = useState<TransactionState>(
     TransactionState.PENDING
   );
+  const [networkId, setNetwotkId] = useState<string | undefined>("");
 
   const telegramWebApp = window.Telegram.WebApp;
 
@@ -137,10 +140,13 @@ function App() {
           return res;
         });
       setTransactionState(TransactionState.APPROVED);
-    } catch (e) {
+    } catch (e: any) {
+      let errorMessage = "errorApprovingTransaction";
+      if (e.reason === "rejected") errorMessage = "errorTransactionNotApproved";
       console.log("error approving transaction", e);
-      setTransactionState(TransactionState.PENDING);
-      setLogMessageError("Erro");
+      setTransactionState(TransactionState.NOT_APPROVED);
+      setLogMessageError(i18n.t(errorMessage));
+      return;
     }
     if (digitalP2PCanMoveFunds) {
       try {
@@ -161,10 +167,12 @@ function App() {
         setTimeout(() => {
           telegramWebApp.close();
         }, telegramCloseAppTimeOut);
-      } catch (e) {
+      } catch (e: any) {
         console.log("error", e);
+        let errorMessage = "errorTransactionProcessOrder";
+        if (e.reason === "rejected") errorMessage = "errorTransactionRejected";
         setTransactionState(TransactionState.REJECTED);
-        setLogMessageError(i18n.t("errorTransactionProcessOrder"));
+        setLogMessageError(i18n.t(errorMessage));
       }
     } else {
       setTransactionState(TransactionState.PENDING);
@@ -183,8 +191,8 @@ function App() {
   const handleConnect = (
     isConnected: boolean,
     status: AccountControllerState["status"],
-    address?: string
-    //selectedNetworkId: CaipNetworkId
+    address?: string,
+    selectedNetworkId?: string
   ) => {
     if (isConnected) {
       dispatch(setConnectionState(walletConnectionState.CONNECTED));
@@ -195,6 +203,7 @@ function App() {
     }
     setWalletAddress(address);
     setConnectionStatus(status);
+    setNetwotkId(selectedNetworkId);
   };
 
   // Handle MainButton changes on view change
@@ -288,8 +297,8 @@ function App() {
                 {connectionStatus === walletConnectionState.CONNECTED && (
                   <>
                     <InfoLabel
-                      label={i18n.t("digitalP2PExchangeAddress")}
-                      content={digitalP2PExchangeAddress}
+                      label={i18n.t("networkId")}
+                      content={networkId}
                     />
 
                     <InfoLabel
@@ -298,7 +307,7 @@ function App() {
                     />
                   </>
                 )}
-                <h3>{i18n.t("summaryOrder")}:</h3>
+                <h3 className="text-xl">{i18n.t("summaryOrder")}:</h3>
 
                 <InfoLabel
                   label={i18n.t("orderId")}
@@ -314,28 +323,36 @@ function App() {
                   <InfoCard
                     content={
                       <>
-                        <p className="text-customGrayAlternative mt-0 mr-0 mb-4 ml-0 text-left">
-                          Requerimos de dos transacciones para mover los fondos:
-                        </p>
-                        <p
-                          className={`text-customGrayAlternative mt-0 mr-0 mb-4 ml-0 text-left ${
+                        <h5 className="mt-0 mr-0 mb-4 ml-0 text-left">
+                          {i18n.t("transactionTitle")}:
+                        </h5>
+                        <StatusLabel
+                          content={i18n.t("transactionToApprove")}
+                          type={
                             transactionState == TransactionState.APPROVED ||
+                            transactionState == TransactionState.PROCCESED ||
+                            transactionState == TransactionState.REJECTED
+                              ? "success"
+                              : transactionState == TransactionState.PROCESSING
+                                ? "pending"
+                                : transactionState ==
+                                    TransactionState.NOT_APPROVED
+                                  ? "error"
+                                  : "info"
+                          }
+                        />
+                        <StatusLabel
+                          content={i18n.t("transactionToMove")}
+                          type={
                             transactionState == TransactionState.PROCCESED
-                              ? "text-orangePeel"
-                              : ""
-                          }`}
-                        >
-                          1. Transación de aprobación para mover fondos.{" "}
-                        </p>
-                        <p
-                          className={`text-customGrayAlternative mt-0 mr-0 mb-4 ml-0 text-left ${
-                            transactionState == TransactionState.PROCCESED
-                              ? "text-orangePeel"
-                              : ""
-                          }`}
-                        >
-                          2. Transación para mover fondos.
-                        </p>
+                              ? "success"
+                              : transactionState == TransactionState.APPROVED
+                                ? "pending"
+                                : transactionState == TransactionState.REJECTED
+                                  ? "error"
+                                  : "info"
+                          }
+                        />
                       </>
                     }
                   />
