@@ -1,5 +1,4 @@
 # Telegram Mini Apps Demo
-
 Welcome to our guide on developing Telegram Mini Apps! Telegram Mini Apps offer a seamless way to enhance user interaction within the Telegram ecosystem, allowing businesses, developers, and creators to integrate custom web applications directly into Telegram chats. These lightweight, highly interactive web apps can be accessed through special menu buttons or inline buttons in messages, providing users with a rich and immersive experience without ever leaving the chat interface. 
 
 Reach out if you need custom telegram mini app development or support. 
