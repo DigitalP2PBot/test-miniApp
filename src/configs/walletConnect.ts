@@ -1,14 +1,16 @@
 import { createAppKit } from "@reown/appkit/react";
 import { polygon, polygonAmoy, sepolia } from "@reown/appkit/networks";
 
+const urlParams = new URLSearchParams(window.location.search);
+const networkName = urlParams.get("networkName") as string;
+
 const networks = {
   polygon: polygon,
   polygonAmoy: polygonAmoy,
   sepolia: sepolia,
 };
 type NetworkKey = keyof typeof networks;
-const DEFAULT_NETWORK =
-  (import.meta.env.VITE_DEFAULT_NETWORK as NetworkKey) || networks["polygon"];
+const DEFAULT_NETWORK = (networkName as NetworkKey) || networks["polygon"];
 const defaultNetwork = networks[DEFAULT_NETWORK];
 export const createWalletConnectModal = () => {
   const projectId =

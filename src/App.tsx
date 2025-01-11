@@ -10,8 +10,6 @@ import {
   useAppKit,
 } from "@reown/appkit/react";
 
-import logo from "./assets/digital_p2p_logo.png";
-
 import PrimaryButton from "./components/buttons/PrimaryButton";
 import LoadingButton from "./components/buttons/LoadingButton";
 import GhostButton from "./components/buttons/GhostButton";
@@ -47,10 +45,6 @@ enum TransactionState {
   REJECTED = "rejected",
 }
 
-const digitalP2PExchangeAddress = import.meta.env
-  .VITE_DIGITALP2P_POLYGON_SM_ADDRESS;
-
-const polygonUsdtAddress = import.meta.env.VITE_POLYGON_USDT_ADDRESS;
 const env = import.meta.env.VITE_ENVIRONMENT;
 const telegramCloseAppTimeOut = 4000;
 
@@ -59,7 +53,7 @@ const USDTAbi = [
 ];
 
 const digitalP2PExchangeAbi = [
-  "function processOrder(string _orderId, uint256 cryptoAmount)",
+  "function processOrder(string _orderId, uint256 cryptoAmount, address tokenAddress)",
 ];
 WebApp.setHeaderColor("#1a1a1a");
 function App() {
@@ -87,6 +81,15 @@ function App() {
     urlParams.get("cryptoAmount") as string
   );
   const lang = urlParams.get("lang") as string;
+  const digitalP2PExchangeAddress = urlParams.get(
+    "networkP2pContractAddress"
+  ) as string;
+  const networkTokenAddress = urlParams.get("networkTokenAddress") as string;
+  //const networkSymbol = urlParams.get("networkSymbol") as string;
+  const networkDecimals = urlParams.get("networkDecimals") as string;
+  //const networkChainId = urlParams.get("networkChainId") as string;
+  //const networkName = urlParams.get("networkName") as string;
+
   i18n.changeLanguage(lang ?? "es");
   const connectionState = useSelector(
     (state: RootState) => state.connection.connectionState
@@ -94,7 +97,7 @@ function App() {
 
   const dispatch = useDispatch<AppDispatch>();
   const cryptoAmountScaleToUsdtDecimals = (amount: number) => {
-    return Math.round(amount * 1e6);
+    return Math.round(amount * Math.pow(10, parseInt(networkDecimals)));
   };
   const approveTransaction = async () => {
     setTransactionState(TransactionState.PROCESSING);
@@ -112,9 +115,9 @@ function App() {
       await handleDisconnect();
       return;
     }
-    console.log("polygonUsdtAddress", polygonUsdtAddress);
+    console.log("Network token address", networkTokenAddress);
 
-    const usdtContract = new Contract(polygonUsdtAddress, USDTAbi, signer);
+    const usdtContract = new Contract(networkTokenAddress, USDTAbi, signer);
 
     const digitalP2PExchangeContract = new Contract(
       digitalP2PExchangeAddress,
@@ -145,6 +148,7 @@ function App() {
           .processOrder(
             orderId,
             cryptoAmountScaleToUsdtDecimals(cryptoAmount),
+            networkTokenAddress,
             {
               gasLimit: 300000,
             }
@@ -283,81 +287,94 @@ function App() {
               <div>
                 {connectionStatus === walletConnectionState.CONNECTED && (
                   <>
-                    <InfoLabel label={i18n.t("digitalP2PExchangeAddress")} content={digitalP2PExchangeAddress}/>
+                    <InfoLabel
+                      label={i18n.t("digitalP2PExchangeAddress")}
+                      content={digitalP2PExchangeAddress}
+                    />
 
-                    <InfoLabel label={i18n.t("walletAddress")} content={userWalletAddress} />
+                    <InfoLabel
+                      label={i18n.t("walletAddress")}
+                      content={userWalletAddress}
+                    />
                   </>
                 )}
-                <h3>
-                  {i18n.t("summaryOrder")}:
-                </h3>
+                <h3>{i18n.t("summaryOrder")}:</h3>
 
-                <InfoLabel label={i18n.t("orderId")} content={orderId} ></InfoLabel>
+                <InfoLabel
+                  label={i18n.t("orderId")}
+                  content={orderId}
+                ></InfoLabel>
 
-                <InfoLabel label={i18n.t("cryptoAmount")} content={String(cryptoAmount)} ></InfoLabel>
+                <InfoLabel
+                  label={i18n.t("cryptoAmount")}
+                  content={String(cryptoAmount)}
+                ></InfoLabel>
 
                 {connectionStatus === walletConnectionState.CONNECTED && (
-                  <InfoCard content={
-                    <>
-                    
-                      <p className="text-customGrayAlternative mt-0 mr-0 mb-4 ml-0 text-left">
-                        Requerimos de dos transacciones para mover los fondos:
-                      </p>
-                      <p
-                        className={`text-customGrayAlternative mt-0 mr-0 mb-4 ml-0 text-left ${
-                          transactionState == TransactionState.APPROVED ||
-                          transactionState == TransactionState.PROCCESED
-                            ? "text-orangePeel"
-                            : ""
-                        }`}
-                      >
-                        1. Transación de aprobación para mover fondos.{" "}
-                      </p>
-                      <p
-                        className={`text-customGrayAlternative mt-0 mr-0 mb-4 ml-0 text-left ${
-                          transactionState == TransactionState.PROCCESED
-                            ? "text-orangePeel"
-                            : ""
-                        }`}
-                      >
-                        2. Transación para mover fondos.
-                      </p>
-                    </>
-                  } />
+                  <InfoCard
+                    content={
+                      <>
+                        <p className="text-customGrayAlternative mt-0 mr-0 mb-4 ml-0 text-left">
+                          Requerimos de dos transacciones para mover los fondos:
+                        </p>
+                        <p
+                          className={`text-customGrayAlternative mt-0 mr-0 mb-4 ml-0 text-left ${
+                            transactionState == TransactionState.APPROVED ||
+                            transactionState == TransactionState.PROCCESED
+                              ? "text-orangePeel"
+                              : ""
+                          }`}
+                        >
+                          1. Transación de aprobación para mover fondos.{" "}
+                        </p>
+                        <p
+                          className={`text-customGrayAlternative mt-0 mr-0 mb-4 ml-0 text-left ${
+                            transactionState == TransactionState.PROCCESED
+                              ? "text-orangePeel"
+                              : ""
+                          }`}
+                        >
+                          2. Transación para mover fondos.
+                        </p>
+                      </>
+                    }
+                  />
                 )}
-
               </div>
-            </div>            
+            </div>
             <footer className="flex flex-col gap-4 p-8 pt-0 bg-white rounded-xl shadow-custom-white">
               {view === View.CONNECTED && (
                 <>
-                {transactionState === TransactionState.PENDING && (
-                  <PrimaryButton
-                    title={i18n.t("depositFund")}
-                    callback={approveTransaction}
-                  />
-                )}
-                {transactionState === TransactionState.PROCESSING && (
-                  <LoadingButton
-                    title={i18next.t("processing")}
-                    isLoading={true}
-                  />
-                )}
-                {transactionState === TransactionState.APPROVED && (
-                  <LoadingButton
-                    title={i18next.t("processOrderButtonTitle")}
-                    isLoading={true}
-                  />
-                )}
-                {env === "dev" && (
-                  <GhostButton title="Disconnect" callback={handleDisconnect} />
-                )}
+                  {transactionState === TransactionState.PENDING && (
+                    <PrimaryButton
+                      title={i18n.t("depositFund")}
+                      callback={approveTransaction}
+                    />
+                  )}
+                  {transactionState === TransactionState.PROCESSING && (
+                    <LoadingButton
+                      title={i18next.t("processing")}
+                      isLoading={true}
+                    />
+                  )}
+                  {transactionState === TransactionState.APPROVED && (
+                    <LoadingButton
+                      title={i18next.t("processOrderButtonTitle")}
+                      isLoading={true}
+                    />
+                  )}
+                  {env === "dev" && (
+                    <GhostButton
+                      title="Disconnect"
+                      callback={handleDisconnect}
+                    />
+                  )}
                 </>
               )}
               {view === View.CONNECT && (
                 <WalletConnectModal
-                title={i18n.t("buttonConnectWalleTitle")}
-                onCallback={handleConnect}
+                  title={i18n.t("buttonConnectWalleTitle")}
+                  onCallback={handleConnect}
                 />
               )}
             </footer>
