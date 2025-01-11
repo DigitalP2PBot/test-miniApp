@@ -39,13 +39,13 @@ const resources: TranslationResources = {
   },
   es: {
     translation: {
+      depositFund: "Mover fondos",
       processing: "Iniciando orden...",
       processOrderButtonTitle: "Esperando para mover fondos...",
       summaryOrder: "Resumen de la orden",
       buttonConnectWalleTitle: "Conectar Wallet",
       orderId: "ID de la orden",
       cryptoAmount: "USDT a transferir",
-      depositFund: "Depositar fondos",
       walletAddress: "Dirección de la billetera",
       networkId: "ID de la red",
       errorApprovingTransaction:
@@ -60,9 +60,9 @@ const resources: TranslationResources = {
       transactionInfo: "Ve a tu billetera y aprueba la transacción",
       transactionApprovedHelp:
         "Debes aprobar la transacción en tu billetera para mover los fondos",
-      transactionTitle: "Requerimos de dos transacciones para mover los fondos",
-      transactionToApprove: "Transación de aprobación para mover fondos.",
-      transactionToMove: "Transación para mover fondos.",
+      transactionTitle: "Completa las siguientes acciones para mover los fondos",
+      transactionToApprove: "Aprueba la transacción",
+      transactionToMove: "Confirma el movimiento",
     },
   },
 };

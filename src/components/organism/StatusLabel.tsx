@@ -27,7 +27,7 @@ const getBorderByType = (type:StatusType):string => {
         info: "text-customGrayAlternative",
         pending: "text-orangePeel",
         success: "text-oceanGreen",
-        error: "text-red-800",
+        error: "text-rose-600",
     };
     return borderMap[type] || "";
 };
