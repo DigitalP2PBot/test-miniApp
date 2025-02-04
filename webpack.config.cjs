@@ -7,7 +7,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, "docs"),
     filename: "bundle.js", // This can be named anything; bundle.js is typical
-    publicPath: "/miniApp/", // ✅ Correct path for GitHub Pages
+    publicPath: "/miniApp/",
   },
   plugins: [
     new HtmlWebpackPlugin({
