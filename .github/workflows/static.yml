@@ -57,7 +57,7 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v4
       - name: Upload artifact
-        uses: awalsh128/cache-apt-pkgs-action@v1.4.3
+        uses: actions/upload-pages-artifact@v2
         with:
           # Upload dist repository
           path: "./docs"
