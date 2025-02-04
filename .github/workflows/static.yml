@@ -59,6 +59,8 @@ jobs:
         uses: actions/configure-pages@v4
       - name: Debug Build Output
         run: ls -l ./docs
+      - name: Debug assets
+        run: ls -l docs/assets/
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
