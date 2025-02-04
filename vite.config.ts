@@ -1,12 +1,14 @@
 import { defineConfig } from "vite";
+import basicSsl from "@vitejs/plugin-basic-ssl";
 import react from "@vitejs/plugin-react";
 
+// https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), basicSsl()],
   build: {
-    outDir: "docs", // ✅ GitHub Pages works better with "dist"
+    outDir: "./docs",
   },
-  base: "/digitalp2pbot.github.io/", // ✅ Must match GitHub Pages repo name
+  base: "./",
   server: {
     port: 5174,
   },
