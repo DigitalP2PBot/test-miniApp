@@ -60,9 +60,7 @@ jobs:
       - name: Debug Build Output
         run: ls -l ./docs
       - name: Debug assets
-        run: ls -l docs/assets/
-      - name: Copy `src/` to `docs/`
-        run: cp -r src docs/src
+        run: ls -l dist
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
