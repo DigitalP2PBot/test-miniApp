@@ -59,7 +59,8 @@ jobs:
         uses: actions/configure-pages@v4
       - name: Debug assets
         run: ls -l
-
+      - name: Debug pwd
+        run: pwd
       - name: Debug assets docs
         run: ls -l docs
       - name: Upload artifact
@@ -67,6 +68,9 @@ jobs:
         with:
           # Upload dist repository
           path: "./docs"
+          name: github-pages
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+        with:
+          artifact_name: github-pages
