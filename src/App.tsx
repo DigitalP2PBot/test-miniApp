@@ -48,7 +48,7 @@ enum TransactionState {
 }
 
 const env = import.meta.env.VITE_ENVIRONMENT;
-const telegramCloseAppTimeOut = 4000;
+const telegramCloseAppTimeOut = 2000;
 
 const USDTAbi = [
   "function approve(address spender, uint256 value) returns (bool)",
