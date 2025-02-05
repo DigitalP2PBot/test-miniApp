@@ -19,8 +19,8 @@ export const createWalletConnectModal = () => {
   const metadata = {
     name: "DigitalP2P Exchange",
     description: "DigitalP2P Defi Protocol.",
-    url: "https://digital.co", // origin must match your domain & subdomain
-    icons: ["https://avatars.mywebsite.com/"],
+    url: "https://bot.digitalp2p.co", // origin must match your domain & subdomain
+    icons: ["https://bot.digitalp2p.co/digitalP2P.svg"],
   };
 
   createAppKit({
