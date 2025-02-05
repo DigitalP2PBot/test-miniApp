@@ -61,7 +61,7 @@ jobs:
       - name: Debug pwd
         run: pwd
       - name: Debug assets docs
-        run: ls -l docs
+        run: ls -l
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
