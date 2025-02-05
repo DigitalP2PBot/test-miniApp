@@ -9,7 +9,7 @@ export default defineConfig({
     outDir: "docs",
     emptyOutDir: true,
   },
-  base: "/miniApp/",
+  base: "/",
   server: {
     port: 5174,
   },
