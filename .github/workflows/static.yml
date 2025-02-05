@@ -62,8 +62,8 @@ jobs:
         run: pwd
       - name: Debug assets docs
         run: ls -l
-      - name: Check for Symlinks
-        run: find ./ -type l -exec ls -l {} \;
+      - name: Check Docs Directory Size
+        run: du -sh ./
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
