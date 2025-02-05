@@ -64,7 +64,7 @@ jobs:
       - name: Check Docs Directory Size
         run: du -sh ./
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-pages-artifact@v3
         with:
           # Upload dist repository
           path: "./docs"
