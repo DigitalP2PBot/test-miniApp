@@ -63,7 +63,7 @@ jobs:
       - name: Debug assets docs
         run: ls -l
       - name: Check for Symlinks
-        run: find ./docs -type l -exec ls -l {} \;
+        run: find ./ -type l -exec ls -l {} \;
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
