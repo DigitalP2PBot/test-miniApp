@@ -3,7 +3,7 @@ import WebApp from "@twa-dev/sdk";
 import { AppDispatch, RootState } from "./redux/store";
 import { AccountControllerState } from "@reown/appkit-core";
 
-import { BrowserProvider, Contract, Eip1193Provider } from "ethers";
+import { BrowserProvider, Contract, Eip1193Provider, ethers } from "ethers";
 import {
   useDisconnect,
   useAppKitProvider,
@@ -89,7 +89,7 @@ function App() {
   ) as string;
   const networkTokenAddress = urlParams.get("networkTokenAddress") as string;
   //const networkSymbol = urlParams.get("networkSymbol") as string;
-  const networkDecimals = urlParams.get("networkDecimals") as string;
+  const networkDecimals = parseInt(urlParams.get("networkDecimals") as string);
   //const networkChainId = urlParams.get("networkChainId") as string;
   //const networkName = urlParams.get("networkName") as string;
 
@@ -133,7 +133,7 @@ function App() {
       digitalP2PCanMoveFunds = await usdtContract
         .approve(
           digitalP2PExchangeAddress,
-          cryptoAmountScaleToUsdtDecimals(cryptoAmount)
+          ethers.parseUnits(cryptoAmount.toString(), networkDecimals)
         )
         .then((res) => {
           console.log("transaction approved", res);
@@ -153,10 +153,10 @@ function App() {
         await digitalP2PExchangeContract
           .processOrder(
             orderId,
-            cryptoAmountScaleToUsdtDecimals(cryptoAmount),
+            ethers.parseUnits(cryptoAmount.toString(), networkDecimals),
             networkTokenAddress,
             {
-              gasLimit: 300000,
+              gasLimit: 100000,
             }
           )
           .then((res) => {
