@@ -11,7 +11,7 @@ export const getDominantColor = (imageUrl: string): ColorCalculationResult => {
       const ctx = canvas.getContext("2d");
 
       if (!ctx) {
-        reject("Unable to get canvas context.");
+        reject("Unable to get canvas context");
         return;
       }
 
