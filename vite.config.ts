@@ -7,6 +7,7 @@ export default defineConfig({
   plugins: [react(), basicSsl()],
   build: {
     outDir: "./docs",
+    emptyOutDir: true,
   },
   base: "./",
   server: {

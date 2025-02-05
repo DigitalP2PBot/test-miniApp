@@ -51,6 +51,8 @@ jobs:
           cat .env
       - name: Install dependencies
         run: npm install
+      - name: Clean Old Build Files
+        run: rm -rf docs && mkdir docs
       - name: Build
         run: npm run build
       - name: Setup Pages
@@ -68,11 +70,6 @@ jobs:
           path: "./docs"
           name: github-pages
           if-no-files-found: error
-          exclude: |
-            **/*.map
-            **/node_modules/**
-            **/dist/**
-            **/tests/**
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
