@@ -54,7 +54,7 @@ jobs:
       - name: Install dependencies
         run: npm install
       - name: Build
-        run: npm run build-vite
+        run: npm run build
       - name: Setup Pages
         uses: actions/configure-pages@v4
       - name: Debug assets
