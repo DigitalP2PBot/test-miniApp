@@ -37,7 +37,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
           cache: "npm"
           cache-dependency-path: "./"
       - name: Create env file
@@ -54,7 +54,7 @@ jobs:
       - name: Install dependencies
         run: npm install
       - name: Build
-        run: npm run build
+        run: npm run build-vite
       - name: Setup Pages
         uses: actions/configure-pages@v4
       - name: Debug assets
