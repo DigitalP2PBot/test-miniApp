@@ -67,6 +67,12 @@ jobs:
           # Upload dist repository
           path: "./docs"
           name: github-pages
+          if-no-files-found: error
+          exclude: |
+            **/*.map
+            **/node_modules/**
+            **/dist/**
+            **/tests/**
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
