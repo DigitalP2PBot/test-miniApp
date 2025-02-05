@@ -51,8 +51,6 @@ jobs:
           cat .env
       - name: Install dependencies
         run: npm install
-      - name: Clean Old Build Files
-        run: rm -rf docs && mkdir docs
       - name: Build
         run: npm run build
       - name: Setup Pages
@@ -61,8 +59,6 @@ jobs:
         run: ls -l
       - name: Debug pwd
         run: pwd
-      - name: Debug assets docs
-        run: ls -l docs
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
