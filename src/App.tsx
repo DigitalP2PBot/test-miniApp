@@ -99,9 +99,6 @@ function App() {
   );
 
   const dispatch = useDispatch<AppDispatch>();
-  const cryptoAmountScaleToUsdtDecimals = (amount: number) => {
-    return Math.round(amount * Math.pow(10, parseInt(networkDecimals)));
-  };
   const approveTransaction = async () => {
     setTransactionState(TransactionState.PROCESSING);
     const ethersProvider = new BrowserProvider(
