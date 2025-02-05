@@ -38,6 +38,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: "npm"
       - name: Create env file
         run: |
           touch .env
@@ -59,15 +60,16 @@ jobs:
         run: ls -l
       - name: Debug pwd
         run: pwd
+      - name: Debug assets docs
+        run: ls -l docs
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           # Upload dist repository
-          path: "./"
+          path: "./docs"
           name: github-pages
-          if-no-files-found: error
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4.0.5
+        uses: actions/deploy-pages@v3
         with:
           artifact_name: github-pages
