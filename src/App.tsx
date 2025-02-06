@@ -153,7 +153,7 @@ function App() {
             ethers.parseUnits(cryptoAmount.toString(), networkDecimals),
             networkTokenAddress,
             {
-              gasLimit: 100000,
+              gasLimit: 200000,
             }
           )
           .then((res) => {
