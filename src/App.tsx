@@ -377,12 +377,7 @@ function App() {
                       isLoading={true}
                     />
                   )}
-                  {env === "dev" && (
-                    <GhostButton
-                      title="Disconnect"
-                      callback={handleDisconnect}
-                    />
-                  )}
+                  <GhostButton title="Disconnect" callback={handleDisconnect} />
                 </>
               )}
               {view === View.CONNECT && (
