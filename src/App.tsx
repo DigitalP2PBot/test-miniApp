@@ -236,6 +236,14 @@ function App() {
     dispatch(setConnectionState(walletConnectionState.DISCONNECTED));
   };
 
+ const { open } = useAppKit();
+
+  const handleReconnect = async () => {
+    await disconnectUser();
+    handleConnect(false, "disconnected");
+    open({ view: "Connect" });
+  };
+
   useEffect(() => {
     // Access the WebApp object
 
@@ -377,6 +385,10 @@ function App() {
                       isLoading={true}
                     />
                   )}
+                  <GhostButton
+                    title={i18next.t("reconnect")}
+                    callback={handleReconnect}
+                  />
                   {env === "dev" && (
                     <GhostButton
                       title="Disconnect"
