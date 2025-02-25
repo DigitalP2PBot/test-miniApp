@@ -17,7 +17,7 @@ const resources: TranslationResources = {
       orderId: "Order ID",
       cryptoAmount: "Crypto Amount",
       depositFund: "Deposit Fund",
-      walletAddress: "Wallet Address",
+      walletAddress: "Connected wallet Address",
       networkId: "Network ID",
       errorApprovingTransaction:
         "You should approve the transaction to continue the trade",
@@ -35,6 +35,7 @@ const resources: TranslationResources = {
       transactionTitle: "We require two transactions to move the funds",
       transactionToApprove: "Approval transaction to move funds.",
       transactionToMove: "Transaction to move funds.",
+      reconnect: "Reconnect",
     },
   },
   es: {
@@ -46,7 +47,7 @@ const resources: TranslationResources = {
       buttonConnectWalleTitle: "Conectar Wallet",
       orderId: "ID de la orden",
       cryptoAmount: "USDT a transferir",
-      walletAddress: "Dirección de la billetera",
+      walletAddress: "Dirección de la billetera conectada",
       networkId: "ID de la red",
       errorApprovingTransaction:
         "Debes aprobar la transacción para continuar con el intercambio",
@@ -63,6 +64,7 @@ const resources: TranslationResources = {
       transactionTitle: "Completa las siguientes acciones para mover los fondos",
       transactionToApprove: "Aprueba la transacción",
       transactionToMove: "Confirma el movimiento",
+      reconnect: "Reconectar",
     },
   },
 };

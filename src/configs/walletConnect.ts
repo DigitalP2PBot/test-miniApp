@@ -10,7 +10,7 @@ const networks = {
   sepolia: sepolia,
 };
 type NetworkKey = keyof typeof networks;
-const DEFAULT_NETWORK = (networkName as NetworkKey) || networks["polygon"];
+const DEFAULT_NETWORK = (networkName as NetworkKey) || "polygon";
 const defaultNetwork = networks[DEFAULT_NETWORK];
 export const createWalletConnectModal = () => {
   const projectId =

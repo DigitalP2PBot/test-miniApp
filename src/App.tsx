@@ -74,7 +74,7 @@ function App() {
   const [transactionState, setTransactionState] = useState<TransactionState>(
     TransactionState.PENDING
   );
-  const [networkId, setNetwotkId] = useState<string | undefined>("");
+  const [networkName, setNetwotkName] = useState<string | undefined>("");
 
   const telegramWebApp = window.Telegram.WebApp;
 
@@ -189,7 +189,7 @@ function App() {
     isConnected: boolean,
     status: AccountControllerState["status"],
     address?: string,
-    selectedNetworkId?: string
+    selectedNetworkName?: string
   ) => {
     if (isConnected) {
       dispatch(setConnectionState(walletConnectionState.CONNECTED));
@@ -200,7 +200,7 @@ function App() {
     }
     setWalletAddress(address);
     setConnectionStatus(status);
-    setNetwotkId(selectedNetworkId);
+    setNetwotkName(selectedNetworkName);
   };
 
   // Handle MainButton changes on view change
@@ -234,6 +234,14 @@ function App() {
   const handleDisconnect = async () => {
     await disconnectUser();
     dispatch(setConnectionState(walletConnectionState.DISCONNECTED));
+  };
+
+ const { open } = useAppKit();
+
+  const handleReconnect = async () => {
+    await disconnectUser();
+    handleConnect(false, "disconnected");
+    open({ view: "Connect" });
   };
 
   useEffect(() => {
@@ -295,7 +303,7 @@ function App() {
                   <>
                     <InfoLabel
                       label={i18n.t("networkId")}
-                      content={networkId}
+                      content={networkName}
                     />
 
                     <InfoLabel
@@ -377,7 +385,10 @@ function App() {
                       isLoading={true}
                     />
                   )}
-                  <GhostButton title="Disconnect" callback={handleDisconnect} />
+                  <GhostButton
+                    title={i18next.t("reconnect")}
+                    callback={handleReconnect}
+                  />
                 </>
               )}
 
