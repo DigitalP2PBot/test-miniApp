@@ -1,6 +1,10 @@
 import { useState, useEffect } from "react";
-import WebApp from "@twa-dev/sdk";
+
 import { AppDispatch, RootState } from "./redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { setConnectionState } from "./redux/connectionSlice";
+
+import WebApp from "@twa-dev/sdk";
 import { AccountControllerState } from "@reown/appkit-core";
 
 import { BrowserProvider, Contract, Eip1193Provider, ethers } from "ethers";
@@ -13,18 +17,15 @@ import {
 import PrimaryButton from "./components/buttons/PrimaryButton";
 import LoadingButton from "./components/buttons/LoadingButton";
 import GhostButton from "./components/buttons/GhostButton";
-
 import WalletConnectModal from "./components/connectors/WalletConnectModal";
-
 import LayoutHeader from "./components/organism/LayuotHeader";
 import InfoLabel from "./components/organism/InfoLabel";
 import InfoCard from "./components/organism/InfoCard";
 import StatusLabel from "./components/organism/StatusLabel";
-
-import { useDispatch, useSelector } from "react-redux";
-import { setConnectionState } from "./redux/connectionSlice";
 import i18n from "./configs/i18n";
 import i18next from "i18next";
+
+import { ContractController } from "./controllers/contractController";
 
 enum View {
   LANDING = 0,
@@ -57,6 +58,9 @@ const USDTAbi = [
 const digitalP2PExchangeAbi = [
   "function processOrder(string _orderId, uint256 cryptoAmount, address tokenAddress)",
 ];
+
+const contractController = new ContractController();
+
 WebApp.setHeaderColor("#1a1a1a");
 function App() {
   const { close } = useAppKit();
@@ -100,6 +104,7 @@ function App() {
 
   const dispatch = useDispatch<AppDispatch>();
   const approveTransaction = async () => {
+    contractController.initTransaction({});
     setTransactionState(TransactionState.PROCESSING);
     const ethersProvider = new BrowserProvider(
       walletProvider as Eip1193Provider
