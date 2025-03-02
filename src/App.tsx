@@ -86,9 +86,14 @@ function App() {
 
   const dispatch = useDispatch<AppDispatch>();
 
-  const finishTransaction = () => {
+  const finishTransaction = (message:string, state: TransactionState) => {
     clearInterval(checkInterval);
     checkInterval = null;
+    if(state === TransactionState.PROCCESED){
+      setLogMessageSuccess(i18n.t(message));
+      return;
+    }
+    setLogMessageError(i18n.t(message));
   }
 
   const approveTransaction = async () => {
@@ -96,8 +101,10 @@ function App() {
 
     transaction.createTransaction({search: window.location.search, walletProvider});
     checkInterval = setInterval(() => {
-      const {isFinished, status} = transaction.checkStatus();
-      if (isFinished) finishTransaction();
+      const {isFinished, status, message} = transaction.checkStatus();
+      if (isFinished) {
+        finishTransaction(message, status);
+      }
       setTransactionState(status);
     }, 500);
 
@@ -165,7 +172,7 @@ function App() {
  const { open } = useAppKit();
 
   const handleReconnect = async () => {
-    await disconnectUser();
+    await handleDisconnect();
     handleConnect(false, "disconnected");
     open({ view: "Connect" });
   };

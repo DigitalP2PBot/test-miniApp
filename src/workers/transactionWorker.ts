@@ -24,17 +24,18 @@ export class Transaction {
   private search: string = "";
   private walletProvider: any | null = null;
   private signer: any | null = null;
+  private returnMessage: string = "";
 
   setTransactionState = (state:TransactionState) => this.transactionStatus = state;
 
   getTransactionState = () => this.transactionStatus;
 
   checkStatus = () => {
-    if([TransactionState.PROCCESED, TransactionState.REJECTED, TransactionState.NOT_APPROVED].includes(this.transactionStatus)){
-      return {isFinished: true, status: this.transactionStatus};
+    const isFinished = [TransactionState.PROCCESED, TransactionState.REJECTED, TransactionState.NOT_APPROVED].includes(this.transactionStatus)
+    if(!isFinished){
+      this.createTransaction({search: this.search, walletProvider:this.walletProvider});
     }
-    this.createTransaction({search: this.search, walletProvider:this.walletProvider});
-    return {isFinished: false, status: this.transactionStatus};
+    return {isFinished, status: this.transactionStatus, message: this.returnMessage};
   }
 
   public createTransaction = async ({search, walletProvider}: any) => {
@@ -60,6 +61,7 @@ export class Transaction {
         networkDecimals,
       }).then(() => this.usdtContract = true)
       .catch( e => {
+        console.error(`USDT Contract Error ${e}`);
         this.transactionStatus = TransactionState.NOT_APPROVED;
       });
     };
@@ -74,10 +76,12 @@ export class Transaction {
         cryptoAmount,
         networkDecimals,
         networkTokenAddress,
-      }).then( () => this.exchangeContract = true).catch( e => {
+      }).then( () => this.exchangeContract = true).catch( (e) => {
+        console.error(`Exchange Contract Error ${e}`);
         this.transactionStatus = TransactionState.REJECTED;
       });
     }
+    if (this.exchangeContract === true) this.returnMessage = "transactionApproved";
     return true;
   };
 
@@ -93,6 +97,7 @@ export class Transaction {
       signer = await ethersProvider.getSigner();
     } catch (e) {
       console.log("error get signer", e);
+      this.returnMessage = "walletNotConnected";
       this.setTransactionState(TransactionState.PENDING);
     }
     this.signer = signer;
@@ -123,8 +128,8 @@ export class Transaction {
       let errorMessage = "errorApprovingTransaction";
       if (e.reason === "rejected") errorMessage = "errorTransactionNotApproved";
       console.log("error approving transaction", e);
+      this.returnMessage = errorMessage;
       this.setTransactionState(TransactionState.NOT_APPROVED);
-      return;
     }
     return digitalP2PCanMoveFunds;
   }
@@ -140,6 +145,7 @@ export class Transaction {
   }: any) => {
     if (!digitalP2PCanMoveFunds) {
       this.setTransactionState(TransactionState.PENDING);
+      this.returnMessage = "errorApprovingTransaction";
       return;
     }
     const digitalP2PExchangeContract = new Contract(
@@ -165,6 +171,7 @@ export class Transaction {
       console.log("error", e);
       let errorMessage = "errorTransactionProcessOrder";
       if (e.reason === "rejected") errorMessage = "errorTransactionRejected";
+      this.returnMessage = errorMessage;
       this.setTransactionState(TransactionState.REJECTED);
     }
   };
