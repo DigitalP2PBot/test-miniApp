@@ -7,7 +7,7 @@ import { setConnectionState } from "./redux/connectionSlice";
 import WebApp from "@twa-dev/sdk";
 import { AccountControllerState } from "@reown/appkit-core";
 
-import { BrowserProvider, Contract, Eip1193Provider, ethers } from "ethers";
+import { Transaction } from './workers/transactionWorker';
 import {
   useDisconnect,
   useAppKitProvider,
@@ -24,8 +24,6 @@ import InfoCard from "./components/organism/InfoCard";
 import StatusLabel from "./components/organism/StatusLabel";
 import i18n from "./configs/i18n";
 import i18next from "i18next";
-
-import { ContractController } from "./controllers/contractController";
 
 enum View {
   LANDING = 0,
@@ -49,17 +47,6 @@ enum TransactionState {
 }
 
 const env = import.meta.env.VITE_ENVIRONMENT;
-const telegramCloseAppTimeOut = 2000;
-
-const USDTAbi = [
-  "function approve(address spender, uint256 value) returns (bool)",
-];
-
-const digitalP2PExchangeAbi = [
-  "function processOrder(string _orderId, uint256 cryptoAmount, address tokenAddress)",
-];
-
-const contractController = new ContractController();
 
 WebApp.setHeaderColor("#1a1a1a");
 function App() {
@@ -88,14 +75,9 @@ function App() {
     urlParams.get("cryptoAmount") as string
   );
   const lang = urlParams.get("lang") as string;
-  const digitalP2PExchangeAddress = urlParams.get(
-    "networkP2pContractAddress"
-  ) as string;
-  const networkTokenAddress = urlParams.get("networkTokenAddress") as string;
-  //const networkSymbol = urlParams.get("networkSymbol") as string;
-  const networkDecimals = parseInt(urlParams.get("networkDecimals") as string);
-  //const networkChainId = urlParams.get("networkChainId") as string;
-  //const networkName = urlParams.get("networkName") as string;
+
+  const transaction = new Transaction();
+  let checkInterval: any | null = null;
 
   i18n.changeLanguage(lang ?? "es");
   const connectionState = useSelector(
@@ -103,83 +85,22 @@ function App() {
   );
 
   const dispatch = useDispatch<AppDispatch>();
+
+  const finishTransaction = () => {
+    clearInterval(checkInterval);
+    checkInterval = null;
+  }
+
   const approveTransaction = async () => {
-    contractController.initTransaction({});
     setTransactionState(TransactionState.PROCESSING);
-    const ethersProvider = new BrowserProvider(
-      walletProvider as Eip1193Provider
-    );
 
-    let signer = null;
-    try {
-      signer = await ethersProvider.getSigner();
-    } catch (e) {
-      console.log("error get signer", e);
-      setLogMessageError(i18n.t("walletNotConnected"));
-      setTransactionState(TransactionState.PENDING);
-      await handleDisconnect();
-      return;
-    }
-    console.log("Network token address", networkTokenAddress);
+    transaction.createTransaction({search: window.location.search, walletProvider});
+    checkInterval = setInterval(() => {
+      const {isFinished, status} = transaction.checkStatus();
+      if (isFinished) finishTransaction();
+      setTransactionState(status);
+    }, 500);
 
-    const usdtContract = new Contract(networkTokenAddress, USDTAbi, signer);
-
-    const digitalP2PExchangeContract = new Contract(
-      digitalP2PExchangeAddress,
-      digitalP2PExchangeAbi,
-      signer
-    );
-
-    let digitalP2PCanMoveFunds = false;
-    try {
-      digitalP2PCanMoveFunds = await usdtContract
-        .approve(
-          digitalP2PExchangeAddress,
-          ethers.parseUnits(cryptoAmount.toString(), networkDecimals)
-        )
-        .then((res) => {
-          console.log("transaction approved", res);
-          return res;
-        });
-      setTransactionState(TransactionState.APPROVED);
-    } catch (e: any) {
-      let errorMessage = "errorApprovingTransaction";
-      if (e.reason === "rejected") errorMessage = "errorTransactionNotApproved";
-      console.log("error approving transaction", e);
-      setTransactionState(TransactionState.NOT_APPROVED);
-      setLogMessageError(i18n.t(errorMessage));
-      return;
-    }
-    if (digitalP2PCanMoveFunds) {
-      try {
-        await digitalP2PExchangeContract
-          .processOrder(
-            orderId,
-            ethers.parseUnits(cryptoAmount.toString(), networkDecimals),
-            networkTokenAddress,
-            {
-              gasLimit: 200000,
-            }
-          )
-          .then((res) => {
-            console.log("transaction processed", res);
-          });
-        setLogMessageSuccess(i18n.t("transactionApproved"));
-        setTransactionState(TransactionState.PROCCESED);
-        setTimeout(() => {
-          telegramWebApp.close();
-        }, telegramCloseAppTimeOut);
-      } catch (e: any) {
-        console.log("error", e);
-        let errorMessage = "errorTransactionProcessOrder";
-        if (e.reason === "rejected") errorMessage = "errorTransactionRejected";
-        setTransactionState(TransactionState.REJECTED);
-        setLogMessageError(i18n.t(errorMessage));
-      }
-    } else {
-      setTransactionState(TransactionState.PENDING);
-      setLogMessageError(i18n.t("errorApprovingTransaction"));
-    }
   };
   const disconnectUser = async () => {
     await disconnect();
