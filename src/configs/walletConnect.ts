@@ -12,14 +12,16 @@ const networks = {
 type NetworkKey = keyof typeof networks;
 const DEFAULT_NETWORK = (networkName as NetworkKey) || networks["polygon"];
 const defaultNetwork = networks[DEFAULT_NETWORK];
+const APP_DOMAIN = import.meta.env.VITE_APP_DOMAIN || "https://bot.digitalp2p.co";
 export const createWalletConnectModal = () => {
   const projectId =
     import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID || ("" as string);
 
+  console.log(APP_DOMAIN);
   const metadata = {
     name: "DigitalP2P Exchange",
     description: "DigitalP2P Defi Protocol.",
-    url: "https://bot.digitalp2p.co", // origin must match your domain & subdomain
+    url: APP_DOMAIN, // origin must match your domain & subdomain
     icons: ["https://bot.digitalp2p.co/digitalP2P.svg"],
   };
 
