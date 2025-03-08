@@ -32,6 +32,7 @@ export class Transaction {
 
   checkStatus = () => {
     const isFinished = [TransactionState.PROCCESED, TransactionState.REJECTED, TransactionState.NOT_APPROVED].includes(this.transactionStatus)
+    console.log("status:", this.transactionStatus);
     if(!isFinished){
       this.createTransaction({search: this.search, walletProvider:this.walletProvider});
     }
