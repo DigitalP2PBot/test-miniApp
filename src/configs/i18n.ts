@@ -40,7 +40,7 @@ const resources: TranslationResources = {
   },
   es: {
     translation: {
-      depositFund: "Mover fondos",
+      depositFund: "Depositar fondos",
       processing: "Iniciando orden...",
       processOrderButtonTitle: "Esperando para mover fondos...",
       summaryOrder: "Resumen de la orden",

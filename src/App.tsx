@@ -47,6 +47,7 @@ enum TransactionState {
 }
 
 const env = import.meta.env.VITE_ENVIRONMENT;
+const telegramCloseAppTimeOut = 2000;
 
 WebApp.setHeaderColor("#1a1a1a");
 function App() {
@@ -94,6 +95,9 @@ function App() {
       return;
     }
     setLogMessageError(i18n.t(message));
+    setTimeout(() => {
+      telegramWebApp.close();
+    }, telegramCloseAppTimeOut);
   }
 
   const approveTransaction = async () => {
