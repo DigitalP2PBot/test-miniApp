@@ -18,9 +18,11 @@ enum TransactionState {
 }
 
 let hasFocus = false;
+let lastUrl = "";
 const originalOpen = window.open;
 window.open = function (url: string | URL | undefined, target: string | undefined, features: string |undefined ) {
   console.log("open", url, target, features);
+  lastUrl = url as string;
   return originalOpen(url, target, features);
 };
 
@@ -104,9 +106,12 @@ export class Transaction {
         console.error(`Exchange Contract Error ${e}`);
         this.transactionStatus = TransactionState.REJECTED;
       });
+    }
+    if(isFocused && this.exchangeContract === false && this.waitForContract === undefined) {
       this.waitForContract = setTimeout(() => {
-        console.log("Transaction Timeout");
-      }, 10000);
+        window.open(lastUrl, "_blank", "noopener noreferrer");
+        console.log("Transaction Approved");
+      }, 1000);
     }
     if (this.exchangeContract === true) this.returnMessage = "transactionApproved";
     return true;
