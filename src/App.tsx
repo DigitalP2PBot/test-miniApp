@@ -91,14 +91,14 @@ function App() {
   const finishTransaction = (message:string, state: TransactionState) => {
     clearInterval(checkInterval);
     checkInterval = null;
+    setTimeout(() => {
+      telegramWebApp.close();
+    }, telegramCloseAppTimeOut);
     if(state === TransactionState.PROCCESED){
       setLogMessageSuccess(i18n.t(message));
       return;
     }
     setLogMessageError(i18n.t(message));
-    setTimeout(() => {
-      telegramWebApp.close();
-    }, telegramCloseAppTimeOut);
   }
 
   const approveTransaction = async () => {

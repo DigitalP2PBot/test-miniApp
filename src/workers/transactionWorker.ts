@@ -103,14 +103,12 @@ export class Transaction {
       });
     }
     if(isFocused && this.exchangeContract === false && this.waitForContract === undefined) {
-      console.log("forcing open");
       this.waitForContract = setInterval(() => {
         if(!isFocused) {
           clearInterval(this.waitForContract);
           this.waitForContract = undefined;
           return;
         }
-        console.log("try to open");
         window.open(lastUrl, "_blank", "noopener noreferrer");
       }, 5000);
     }
