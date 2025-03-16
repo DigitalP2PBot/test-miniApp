@@ -27,6 +27,19 @@ export class Transaction {
   private returnMessage: string = "";
   private waitForContract: any | null = undefined;
 
+  constructor() {
+    this.transactionStatus = TransactionState.PENDING;
+    document.addEventListener('visibilitychange', this.handleVisibilityChange);
+  }
+
+  handleVisibilityChange = () => {
+    if (document.visibilityState === 'visible') {
+      console.log('The tab has become visible');
+    } else {
+      console.log('The tab has become hidden');
+    }
+  }
+
   setTransactionState = (state:TransactionState) => this.transactionStatus = state;
 
   getTransactionState = () => this.transactionStatus;
@@ -43,7 +56,7 @@ export class Transaction {
   public createTransaction = async ({search, walletProvider}: any) => {
     this.search = search;
     this.walletProvider = walletProvider;
-    const isFocused = true;
+    const isFocused = document.hasFocus();
     console.log("isFocused", isFocused);
     const urlParams = new URLSearchParams(this.search);
     const signer = await this.#getSigner(this.walletProvider);
