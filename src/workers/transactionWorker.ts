@@ -89,7 +89,7 @@ export class Transaction {
           console.error(`Exchange Contract Error ${e}`);
           this.transactionStatus = TransactionState.REJECTED;
         });
-      }, 1000);
+      }, 10000);
     }
     if (this.exchangeContract === true) this.returnMessage = "transactionApproved";
     return true;
