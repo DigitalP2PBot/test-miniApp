@@ -35,14 +35,7 @@ export class Transaction {
   }
 
   handleVisibilityChange = () => {
-    if (document.visibilityState === 'visible') {
-      debugger;
-      hasFocus = true;
-      console.log('The tab has become visible', hasFocus);
-    } else {
-      hasFocus = false;
-      console.log('The tab has become hidden', hasFocus);
-    }
+    hasFocus = document.visibilityState === 'visible';
   }
 
   setTransactionState = (state:TransactionState) => this.transactionStatus = state;
