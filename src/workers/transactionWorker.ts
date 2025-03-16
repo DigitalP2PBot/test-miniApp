@@ -80,26 +80,27 @@ export class Transaction {
         this.transactionStatus = TransactionState.NOT_APPROVED;
       });
     };
-    const isNeedNewContract = this.exchangeContract === undefined && this.waitForContract === undefined && this.usdtContract === true && isFocused;
+    const isNeedNewContract = this.exchangeContract === undefined && this.waitForContract === undefined && this.usdtContract === true;
     console.log("isNeedNewContract", isNeedNewContract);
     console.table({exchangeContract: this.exchangeContract, waitForContract: this.waitForContract, usdtContract: this.usdtContract, isFocused});
     if(isNeedNewContract) {
+      console.log("Exchange Contract created");
+      this.exchangeContract = false;
+      const orderId: string = urlParams.get("orderId") as string;
+      this.#getExchangeContract({
+        digitalP2PCanMoveFunds: this.usdtContract,
+        signer,
+        digitalP2PExchangeAddress,
+        orderId,
+        cryptoAmount,
+        networkDecimals,
+        networkTokenAddress,
+      }).then(() => this.exchangeContract = true).catch( (e) => {
+        console.error(`Exchange Contract Error ${e}`);
+        this.transactionStatus = TransactionState.REJECTED;
+      });
       this.waitForContract = setTimeout(() => {
-        console.log("Exchange Contract created");
-        this.exchangeContract = false;
-        const orderId: string = urlParams.get("orderId") as string;
-        this.#getExchangeContract({
-          digitalP2PCanMoveFunds: this.usdtContract,
-          signer,
-          digitalP2PExchangeAddress,
-          orderId,
-          cryptoAmount,
-          networkDecimals,
-          networkTokenAddress,
-        }).then(() => this.exchangeContract = true).catch( (e) => {
-          console.error(`Exchange Contract Error ${e}`);
-          this.transactionStatus = TransactionState.REJECTED;
-        });
+        console.log("Transaction Timeout");
       }, 10000);
     }
     if (this.exchangeContract === true) this.returnMessage = "transactionApproved";
