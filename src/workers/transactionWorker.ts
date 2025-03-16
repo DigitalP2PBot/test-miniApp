@@ -17,6 +17,8 @@ enum TransactionState {
     REJECTED = "rejected",
 }
 
+let hasFocus = false;
+
 export class Transaction {
   private transactionStatus:TransactionState = TransactionState.PENDING;
   private usdtContract: Promise<boolean | undefined> | boolean | undefined = undefined;
@@ -26,7 +28,6 @@ export class Transaction {
   private signer: any | null = null;
   private returnMessage: string = "";
   private waitForContract: any | null = undefined;
-  private hasFocus: boolean = true;
 
   constructor() {
     this.transactionStatus = TransactionState.PENDING;
@@ -36,11 +37,11 @@ export class Transaction {
   handleVisibilityChange = () => {
     if (document.visibilityState === 'visible') {
       debugger;
-      console.log('The tab has become visible');
-      this.hasFocus = true;
+      hasFocus = true;
+      console.log('The tab has become visible', hasFocus);
     } else {
-      console.log('The tab has become hidden');
-      this.hasFocus = false;
+      hasFocus = false;
+      console.log('The tab has become hidden', hasFocus);
     }
   }
 
@@ -60,7 +61,7 @@ export class Transaction {
   public createTransaction = async ({search, walletProvider}: any) => {
     this.search = search;
     this.walletProvider = walletProvider;
-    const isFocused = this.hasFocus;
+    const isFocused = hasFocus;
     console.log("isFocused", isFocused);
     const urlParams = new URLSearchParams(this.search);
     const signer = await this.#getSigner(this.walletProvider);
