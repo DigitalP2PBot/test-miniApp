@@ -17,7 +17,6 @@ export const createWalletConnectModal = () => {
   const projectId =
     import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID || ("" as string);
 
-  console.log(APP_DOMAIN);
   const metadata = {
     name: "DigitalP2P Exchange",
     description: "DigitalP2P Defi Protocol.",

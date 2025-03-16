@@ -51,7 +51,6 @@ export class Transaction {
 
   checkStatus = () => {
     const isFinished = [TransactionState.PROCCESED, TransactionState.REJECTED, TransactionState.NOT_APPROVED].includes(this.transactionStatus)
-    console.log("status:", this.transactionStatus);
     if(!isFinished){
       this.createTransaction({search: this.search, walletProvider:this.walletProvider});
     }
@@ -62,7 +61,6 @@ export class Transaction {
     this.search = search;
     this.walletProvider = walletProvider;
     const isFocused = hasFocus;
-    console.log("isFocused", isFocused);
     const urlParams = new URLSearchParams(this.search);
     const signer = await this.#getSigner(this.walletProvider);
     const digitalP2PExchangeAddress = urlParams.get(
@@ -88,10 +86,7 @@ export class Transaction {
       });
     };
     const isNeedNewContract = this.exchangeContract === undefined && this.usdtContract === true;
-    console.log("isNeedNewContract", isNeedNewContract);
-    console.table({exchangeContract: this.exchangeContract, waitForContract: this.waitForContract, usdtContract: this.usdtContract, isFocused});
     if(isNeedNewContract) {
-      console.log("Exchange Contract created");
       this.exchangeContract = false;
       const orderId: string = urlParams.get("orderId") as string;
       this.#getExchangeContract({
