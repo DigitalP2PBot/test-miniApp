@@ -108,11 +108,11 @@ export class Transaction {
       });
     }
     if(isFocused && this.exchangeContract === false && this.waitForContract === undefined) {
-      console.log("forxing open");
+      console.log("forcing open");
       this.waitForContract = setTimeout(() => {
         console.log("try to open");
         window.open(lastUrl, "_blank", "noopener noreferrer");
-      }, 5000);
+      }, 10000);
     }
     if (this.exchangeContract === true) this.returnMessage = "transactionApproved";
     return true;
