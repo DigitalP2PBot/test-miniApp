@@ -66,7 +66,7 @@ export class Transaction {
         this.transactionStatus = TransactionState.NOT_APPROVED;
       });
     };
-    if(this.usdtContract === true && this.exchangeContract === undefined) {
+    if(this.usdtContract === true && document.hasFocus() && this.exchangeContract === undefined) {
       this.exchangeContract = false;
       const orderId: string = urlParams.get("orderId") as string;
       this.#getExchangeContract({
