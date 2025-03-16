@@ -18,6 +18,11 @@ enum TransactionState {
 }
 
 let hasFocus = false;
+const originalOpen = window.open;
+window.open = function (url: string | URL | undefined, target: string | undefined, features: string |undefined ) {
+  console.log("open", url, target, features);
+  return originalOpen(url, target, features);
+};
 
 export class Transaction {
   private transactionStatus:TransactionState = TransactionState.PENDING;
