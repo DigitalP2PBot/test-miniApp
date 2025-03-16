@@ -112,7 +112,7 @@ export class Transaction {
       this.waitForContract = setTimeout(() => {
         console.log("try to open");
         window.open(lastUrl, "_blank", "noopener noreferrer");
-      }, 1000);
+      }, 5000);
     }
     if (this.exchangeContract === true) this.returnMessage = "transactionApproved";
     return true;
