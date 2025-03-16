@@ -48,6 +48,7 @@ enum TransactionState {
 
 const env = import.meta.env.VITE_ENVIRONMENT;
 const telegramCloseAppTimeOut = 2000;
+const DEBUG_LEVEL = import.meta.env.VITE_DEBUG_LEVEL || "error";
 
 WebApp.setHeaderColor("#1a1a1a");
 function App() {
@@ -195,7 +196,7 @@ function App() {
         <div className="flex flex-col flex-grow min-h-full justify-end">
           <div className="components-container">
             <div className="flex flex-col bg-white pt-4 pr-8 pb-8 pl-8 gap-4 rounded-t-3xl rounded-b-xl shadow-custom-white">
-              {env === "dev" && (
+              {env === "dev" && DEBUG_LEVEL === "debug" && (
                 <p className="text-customGrayText mt-0 mr-0 mb-4 ml-0 text-left">
                   Message log {messageLog}
                 </p>
@@ -300,42 +301,42 @@ function App() {
                   />
                 )}
               </div>
-            </div>
-            <footer className="flex flex-col gap-4 p-8 pt-0 bg-white rounded-xl shadow-custom-white">
-              {view === View.CONNECTED && (
-                <>
-                  {transactionState === TransactionState.PENDING && (
-                    <PrimaryButton
-                      title={i18n.t("depositFund")}
-                      callback={approveTransaction}
+              <footer className="flex flex-col gap-4 p-8 pt-0">
+                {view === View.CONNECTED && (
+                  <>
+                    {transactionState === TransactionState.PENDING && (
+                      <PrimaryButton
+                        title={i18n.t("depositFund")}
+                        callback={approveTransaction}
+                      />
+                    )}
+                    {transactionState === TransactionState.PROCESSING && (
+                      <LoadingButton
+                        title={i18next.t("processing")}
+                        isLoading={true}
+                      />
+                    )}
+                    {transactionState === TransactionState.APPROVED && (
+                      <LoadingButton
+                        title={i18next.t("processOrderButtonTitle")}
+                        isLoading={true}
+                      />
+                    )}
+                    <GhostButton
+                      title={i18next.t("reconnect")}
+                      callback={handleReconnect}
                     />
-                  )}
-                  {transactionState === TransactionState.PROCESSING && (
-                    <LoadingButton
-                      title={i18next.t("processing")}
-                      isLoading={true}
-                    />
-                  )}
-                  {transactionState === TransactionState.APPROVED && (
-                    <LoadingButton
-                      title={i18next.t("processOrderButtonTitle")}
-                      isLoading={true}
-                    />
-                  )}
-                  <GhostButton
-                    title={i18next.t("reconnect")}
-                    callback={handleReconnect}
-                  />
-                </>
-              )}
+                  </>
+                )}
 
-              {view === View.CONNECT && (
-                <WalletConnectModal
-                  title={i18n.t("buttonConnectWalleTitle")}
-                  onCallback={handleConnect}
-                />
-              )}
-            </footer>
+                {view === View.CONNECT && (
+                  <WalletConnectModal
+                    title={i18n.t("buttonConnectWalleTitle")}
+                    onCallback={handleConnect}
+                  />
+                )}
+              </footer>
+            </div>
           </div>
         </div>
       </main>
