@@ -43,7 +43,7 @@ export class Transaction {
   public createTransaction = async ({search, walletProvider}: any) => {
     this.search = search;
     this.walletProvider = walletProvider;
-    const isFocused = document.hasFocus();
+    const isFocused = true;
     console.log("isFocused", isFocused);
     const urlParams = new URLSearchParams(this.search);
     const signer = await this.#getSigner(this.walletProvider);
