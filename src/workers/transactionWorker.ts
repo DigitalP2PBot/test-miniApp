@@ -25,6 +25,7 @@ export class Transaction {
   private walletProvider: any | null = null;
   private signer: any | null = null;
   private returnMessage: string = "";
+  private waitForContract: any | null = undefined;
 
   setTransactionState = (state:TransactionState) => this.transactionStatus = state;
 
@@ -42,6 +43,8 @@ export class Transaction {
   public createTransaction = async ({search, walletProvider}: any) => {
     this.search = search;
     this.walletProvider = walletProvider;
+    const isFocused = document.hasFocus();
+    console.log("isFocused", isFocused);
     const urlParams = new URLSearchParams(this.search);
     const signer = await this.#getSigner(this.walletProvider);
     const digitalP2PExchangeAddress = urlParams.get(
@@ -66,21 +69,27 @@ export class Transaction {
         this.transactionStatus = TransactionState.NOT_APPROVED;
       });
     };
-    if(this.usdtContract === true && document.hasFocus() && this.exchangeContract === undefined) {
-      this.exchangeContract = false;
-      const orderId: string = urlParams.get("orderId") as string;
-      this.#getExchangeContract({
-        digitalP2PCanMoveFunds: this.usdtContract,
-        signer,
-        digitalP2PExchangeAddress,
-        orderId,
-        cryptoAmount,
-        networkDecimals,
-        networkTokenAddress,
-      }).then( () => this.exchangeContract = true).catch( (e) => {
-        console.error(`Exchange Contract Error ${e}`);
-        this.transactionStatus = TransactionState.REJECTED;
-      });
+    const isNeedNewContract = this.exchangeContract === undefined && this.waitForContract === undefined && this.usdtContract === true && isFocused;
+    console.log("isNeedNewContract", isNeedNewContract);
+    console.table({exchangeContract: this.exchangeContract, waitForContract: this.waitForContract, usdtContract: this.usdtContract, isFocused});
+    if(isNeedNewContract) {
+      this.waitForContract = setTimeout(() => {
+        console.log("Exchange Contract created");
+        this.exchangeContract = false;
+        const orderId: string = urlParams.get("orderId") as string;
+        this.#getExchangeContract({
+          digitalP2PCanMoveFunds: this.usdtContract,
+          signer,
+          digitalP2PExchangeAddress,
+          orderId,
+          cryptoAmount,
+          networkDecimals,
+          networkTokenAddress,
+        }).then(() => this.exchangeContract = true).catch( (e) => {
+          console.error(`Exchange Contract Error ${e}`);
+          this.transactionStatus = TransactionState.REJECTED;
+        });
+      }, 1000);
     }
     if (this.exchangeContract === true) this.returnMessage = "transactionApproved";
     return true;
