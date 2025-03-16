@@ -87,7 +87,7 @@ export class Transaction {
         this.transactionStatus = TransactionState.NOT_APPROVED;
       });
     };
-    const isNeedNewContract = this.exchangeContract === undefined && this.waitForContract === undefined && this.usdtContract === true;
+    const isNeedNewContract = this.exchangeContract === undefined && this.usdtContract === true;
     console.log("isNeedNewContract", isNeedNewContract);
     console.table({exchangeContract: this.exchangeContract, waitForContract: this.waitForContract, usdtContract: this.usdtContract, isFocused});
     if(isNeedNewContract) {
@@ -108,9 +108,10 @@ export class Transaction {
       });
     }
     if(isFocused && this.exchangeContract === false && this.waitForContract === undefined) {
+      console.log("forxing open");
       this.waitForContract = setTimeout(() => {
+        console.log("try to open");
         window.open(lastUrl, "_blank", "noopener noreferrer");
-        console.log("Transaction Approved");
       }, 1000);
     }
     if (this.exchangeContract === true) this.returnMessage = "transactionApproved";
