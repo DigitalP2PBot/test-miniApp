@@ -122,7 +122,7 @@ export class Transaction {
     window.focus();
     window.Telegram?.WebApp?.expand();
     const focusTarget = document.getElementById('step-pending');
-    focusTarget?.focus();
+    focusTarget?.click();
   }
 
   #getSigner = async (walletProvider: Eip1193Provider) => {
