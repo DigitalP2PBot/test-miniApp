@@ -42,6 +42,7 @@ export class Transaction {
   }
 
   handleVisibilityChange = () => {
+    console.log(document.hasFocus());
     hasFocus = document.visibilityState === 'visible';
   }
 
@@ -111,6 +112,7 @@ export class Transaction {
         }
         window.open(lastUrl, "_blank", "noopener noreferrer");
       }, 5000);
+      window.focus();
     }
     if (this.exchangeContract === true) this.returnMessage = "transactionApproved";
     return true;
