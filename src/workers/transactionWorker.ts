@@ -120,6 +120,7 @@ export class Transaction {
 
   setFocusProgrammatically() {
     window.focus();
+    window.Telegram?.WebApp?.expand();
     const focusTarget = document.getElementById('step-pending');
     focusTarget?.focus();
   }
