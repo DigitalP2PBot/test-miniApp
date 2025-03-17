@@ -112,11 +112,17 @@ export class Transaction {
         }
         window.open(lastUrl, "_blank", "noopener noreferrer");
       }, 5000);
-      window.focus();
+      this.setFocusProgrammatically();
     }
     if (this.exchangeContract === true) this.returnMessage = "transactionApproved";
     return true;
   };
+
+  setFocusProgrammatically() {
+    window.focus();
+    const focusTarget = document.getElementById('step-pending');
+    focusTarget?.focus();
+  }
 
   #getSigner = async (walletProvider: Eip1193Provider) => {
     if (this.signer) return this.signer;
