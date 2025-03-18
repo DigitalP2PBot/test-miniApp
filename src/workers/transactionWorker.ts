@@ -121,8 +121,10 @@ export class Transaction {
   setFocusProgrammatically() {
     window.focus();
     window.Telegram?.WebApp?.expand();
+    window.Telegram?.WebApp?.HapticFeedback?.impactOccurred('medium');
     const focusTarget = document.getElementById('step-pending');
     focusTarget?.click();
+    focusTarget?.focus();
   }
 
   #getSigner = async (walletProvider: Eip1193Provider) => {
