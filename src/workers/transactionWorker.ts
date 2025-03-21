@@ -81,7 +81,7 @@ export class Transaction {
         cryptoAmount,
         networkDecimals,
       }).then(() => {
-        alert("Transaction approved");
+        alert("US contract approved");
         this.usdtContract = true;
       })
       .catch( e => {
