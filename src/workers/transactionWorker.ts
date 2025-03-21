@@ -110,6 +110,7 @@ export class Transaction {
           this.waitForContract = undefined;
           return;
         }
+        window.Telegram?.WebApp?.openLink(lastUrl);
         window.open(lastUrl, "_blank", "noopener noreferrer");
       }, 5000);
       this.setFocusProgrammatically();
