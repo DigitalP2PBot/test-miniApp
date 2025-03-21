@@ -80,7 +80,10 @@ export class Transaction {
         digitalP2PExchangeAddress,
         cryptoAmount,
         networkDecimals,
-      }).then(() => this.usdtContract = true)
+      }).then(() => {
+        alert("Transaction approved");
+        this.usdtContract = true;
+      })
       .catch( e => {
         console.error(`USDT Contract Error ${e}`);
         this.transactionStatus = TransactionState.NOT_APPROVED;
@@ -99,7 +102,6 @@ export class Transaction {
         networkDecimals,
         networkTokenAddress,
       }).then(() => {
-        alert("Transaction approved");
         this.exchangeContract = true
       }).catch( (e) => {
         console.error(`Exchange Contract Error ${e}`);
