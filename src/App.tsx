@@ -22,6 +22,8 @@ import LayoutHeader from "./components/organism/LayuotHeader";
 import InfoLabel from "./components/organism/InfoLabel";
 import InfoCard from "./components/organism/InfoCard";
 import StatusLabel from "./components/organism/StatusLabel";
+import StatusOverlay from "./components/statusOverlay/StatusOverlay";
+
 import i18n from "./configs/i18n";
 import i18next from "i18next";
 
@@ -339,6 +341,7 @@ function App() {
             </div>
           </div>
         </div>
+        <StatusOverlay status={transactionState}/>
       </main>
     </div>
   );

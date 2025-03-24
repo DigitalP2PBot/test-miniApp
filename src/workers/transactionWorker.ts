@@ -48,8 +48,6 @@ export class Transaction {
 
   setTransactionState = (state:TransactionState) => this.transactionStatus = state;
 
-  getTransactionState = () => this.transactionStatus;
-
   checkStatus = () => {
     const isFinished = [TransactionState.PROCCESED, TransactionState.REJECTED, TransactionState.NOT_APPROVED].includes(this.transactionStatus)
     if(!isFinished){
@@ -81,7 +79,6 @@ export class Transaction {
         cryptoAmount,
         networkDecimals,
       }).then(() => {
-        alert("US contract approved");
         this.usdtContract = true;
       })
       .catch( e => {
