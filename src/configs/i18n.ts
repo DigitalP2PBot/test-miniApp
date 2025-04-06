@@ -36,6 +36,9 @@ const resources: TranslationResources = {
       transactionToApprove: "Approval transaction to move funds.",
       transactionToMove: "Transaction to move funds.",
       reconnect: "Reconnect",
+      approvedTransaction: "Transaction approved",
+      momentToMoveFunds: "Moment to move funds",
+      moveFunds: "Move funds",
     },
   },
   es: {
@@ -65,6 +68,9 @@ const resources: TranslationResources = {
       transactionToApprove: "Aprueba la transacción",
       transactionToMove: "Confirma el movimiento",
       reconnect: "Reconectar",
+      approvedTransaction: "Transaccion aprovadas",
+      momentToMoveFunds: "Momento de mover los fondos",
+      moveFunds: "mover",
     },
   },
 };
