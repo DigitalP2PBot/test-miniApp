@@ -11,7 +11,7 @@ const resources: TranslationResources = {
   en: {
     translation: {
       processing: "Starting order...",
-      processOrderButtonTitle: "Waiting to move founds...",
+      processOrderButtonTitle: "Waiting to move funds...",
       summaryOrder: "Order Summary",
       buttonConnectWalleTitle: "Connect Wallet",
       orderId: "Order ID",
@@ -36,9 +36,8 @@ const resources: TranslationResources = {
       transactionToApprove: "Approval transaction to move funds.",
       transactionToMove: "Transaction to move funds.",
       reconnect: "Reconnect",
-      approvedTransaction: "Transaction approved",
-      momentToMoveFunds: "Moment to move funds",
-      moveFunds: "Move funds",
+      sendFunds: "Send funds",
+      goToWallet: "Go to wallet",
     },
   },
   es: {
@@ -68,9 +67,8 @@ const resources: TranslationResources = {
       transactionToApprove: "Aprueba la transacción",
       transactionToMove: "Confirma el movimiento",
       reconnect: "Reconectar",
-      approvedTransaction: "Transaccion aprovadas",
-      momentToMoveFunds: "Momento de mover los fondos",
-      moveFunds: "mover",
+      sendFunds: "Enviar fondos",
+      goToWallet: "Ir a la wallet",
     },
   },
 };
