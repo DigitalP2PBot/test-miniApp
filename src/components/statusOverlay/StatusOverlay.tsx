@@ -9,7 +9,7 @@ type StatusProps = {
 
 type TransitionalTransationState = TransactionState.APPROVED | TransactionState.PROCESSING
 
-const WAIT_TIMEOUT = 5000;
+const WAIT_TIMEOUT = 15000;
 const STATE_TEXT = {
     [TransactionState.APPROVED]: {
         title: "transactionApproved",
@@ -22,17 +22,14 @@ const STATE_TEXT = {
 }
 
 const StatusOverlay: React.FC<StatusProps> = ({ status }) => {
-    const [ focusedApp, focusApp ] = useState(false);
+    const [ focusedApp, focusApp ] = useState(true);
     const showStatus = (status: TransactionState): boolean => {
-        console.log(status);
         return !focusedApp && (
             status === TransactionState.APPROVED || status === TransactionState.PROCESSING
         );
     };
-    const setFocus = () => {
-        focusApp(true);
-        setTimeout(() => focusApp(false), WAIT_TIMEOUT);
-    }
+
+    setTimeout(() => focusApp(false), WAIT_TIMEOUT);
 
     const stateText = STATE_TEXT[status as TransitionalTransationState] || {text: "undefined", content: "undefined"}
 
@@ -44,7 +41,7 @@ const StatusOverlay: React.FC<StatusProps> = ({ status }) => {
                     <div className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg p-8 flex justify-center flex-col">
                         <h5 className="text-center font-bold mb-4">{i18n.t(stateText.title)}</h5>
                         <p>{i18n.t(stateText.content)}</p>
-                        <PrimaryButton className="mt-4" title={i18n.t("goToWallet")} callback={setFocus}/>
+                        <PrimaryButton className="mt-4" title={i18n.t("goToWallet")} callback={() => focusApp(true)}/>
                     </div>
                 </div>
             </div>
