@@ -4,8 +4,10 @@ import PrimaryButton from '../buttons/PrimaryButton';
 import i18n from '../../configs/i18n';
 
 type StatusProps = {
-    status: TransactionState.APPROVED | TransactionState.PROCESSING;
+    status: TransactionState;
 };
+
+type TransitionalTransationState = TransactionState.APPROVED | TransactionState.PROCESSING
 
 const WAIT_TIMEOUT = 5000;
 const STATE_TEXT = {
@@ -32,7 +34,7 @@ const StatusOverlay: React.FC<StatusProps> = ({ status }) => {
         setTimeout(() => focusApp(false), WAIT_TIMEOUT);
     }
 
-    const stateText = STATE_TEXT[status] || {text: "undefined", content: "undefined"}
+    const stateText = STATE_TEXT[status as TransitionalTransationState] || {text: "undefined", content: "undefined"}
 
     return showStatus(status)? (
         <div className='relative z-10' aria-labelledby='Transaction Approved' role="dialog" aria-modal="true">
