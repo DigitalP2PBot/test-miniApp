@@ -38,12 +38,6 @@ export class Transaction {
 
   constructor() {
     this.transactionStatus = TransactionState.PENDING;
-    document.addEventListener('visibilitychange', this.handleVisibilityChange);
-  }
-
-  handleVisibilityChange = () => {
-    console.log(document.hasFocus());
-    hasFocus = document.visibilityState === 'visible';
   }
 
   setTransactionState = (state:TransactionState) => this.transactionStatus = state;
@@ -114,20 +108,10 @@ export class Transaction {
         }
         window.open(lastUrl, "_blank", "noopener noreferrer");
       }, 5000);
-      this.setFocusProgrammatically();
     }
     if (this.exchangeContract === true) this.returnMessage = "transactionApproved";
     return true;
   };
-
-  setFocusProgrammatically() {
-    window.focus();
-    window.Telegram?.WebApp?.expand();
-    window.Telegram?.WebApp?.HapticFeedback?.impactOccurred('medium');
-    const focusTarget = document.getElementById('step-pending');
-    focusTarget?.click();
-    focusTarget?.focus();
-  }
 
   #getSigner = async (walletProvider: Eip1193Provider) => {
     if (this.signer) return this.signer;
