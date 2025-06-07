@@ -5,7 +5,7 @@ import i18n from '../../configs/i18n';
 
 type StatusProps = {
     status: TransactionState;
-    lastUrl: string;
+    lastUrl: string|URL|undefined;
 };
 
 type TransitionalTransationState = TransactionState.APPROVED | TransactionState.PROCESSING

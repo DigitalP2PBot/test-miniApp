@@ -71,6 +71,8 @@ function App() {
   );
   const [networkName, setNetwotkName] = useState<string | undefined>("");
 
+  const [lastUrl, setLastUrl] = useState<string|URL|undefined>("");
+
   const telegramWebApp = window.Telegram.WebApp;
 
   const urlParams = new URLSearchParams(window.location.search);
@@ -91,11 +93,10 @@ function App() {
   const dispatch = useDispatch<AppDispatch>();
 
 
-  let lastUrl = "";
   const originalOpen = window.open;
   window.open = function (url: string | URL | undefined, target: string | undefined, features: string |undefined ) {
     console.log("open", url, target, features);
-    lastUrl = url as string;
+    setLastUrl(url);
     return originalOpen(url, target, features);
   };
 
