@@ -24,6 +24,7 @@ const STATE_TEXT = {
 
 const StatusOverlay: React.FC<StatusProps> = ({ status, lastUrl }) => {
     const [ focusedApp, focusApp ] = useState(true);
+    console.log("lastUrl", lastUrl);
     const showStatus = (status: TransactionState): boolean => {
         return !focusedApp && (
             status === TransactionState.APPROVED || status === TransactionState.PROCESSING
@@ -31,7 +32,7 @@ const StatusOverlay: React.FC<StatusProps> = ({ status, lastUrl }) => {
     };
 
     useEffect(() => {
-        console.log("lastUrl", lastUrl);
+        console.log("lastUrl effect", lastUrl);
         focusApp(false);
     }, [lastUrl]);
     
