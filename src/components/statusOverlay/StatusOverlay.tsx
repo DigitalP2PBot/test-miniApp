@@ -1,4 +1,4 @@
-import  React, { useState } from 'react';
+import  React, { useState, useEffect } from 'react';
 import { TransactionState } from '../../types';
 import PrimaryButton from '../buttons/PrimaryButton';
 import i18n from '../../configs/i18n';
@@ -30,6 +30,10 @@ const StatusOverlay: React.FC<StatusProps> = ({ status, lastUrl }) => {
         );
     };
 
+    useEffect(() => {
+        lastUrl && focusApp(false);
+    }, [lastUrl]);
+    
     const redirectWallet = () => {
         focusApp(true);
         window.open(lastUrl, "__blank");
