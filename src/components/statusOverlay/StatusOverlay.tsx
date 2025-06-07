@@ -31,7 +31,8 @@ const StatusOverlay: React.FC<StatusProps> = ({ status, lastUrl }) => {
     };
 
     useEffect(() => {
-        lastUrl && focusApp(false);
+        console.log("lastUrl", lastUrl);
+        focusApp(false);
     }, [lastUrl]);
     
     const redirectWallet = () => {
