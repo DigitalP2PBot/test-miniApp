@@ -90,6 +90,16 @@ function App() {
 
   const dispatch = useDispatch<AppDispatch>();
 
+
+  let lastUrl = "";
+  const originalOpen = window.open;
+  window.open = function (url: string | URL | undefined, target: string | undefined, features: string |undefined ) {
+    console.log("open", url, target, features);
+    lastUrl = url as string;
+    return originalOpen(url, target, features);
+  };
+
+
   const finishTransaction = (message:string, state: TransactionState) => {
     clearInterval(checkInterval);
     checkInterval = null;
@@ -341,7 +351,7 @@ function App() {
             </div>
           </div>
         </div>
-        <StatusOverlay status={transactionState}/>
+        <StatusOverlay status={transactionState} lastUrl={lastUrl}/>
       </main>
     </div>
   );

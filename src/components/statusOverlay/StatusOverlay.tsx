@@ -5,6 +5,7 @@ import i18n from '../../configs/i18n';
 
 type StatusProps = {
     status: TransactionState;
+    lastUrl: string;
 };
 
 type TransitionalTransationState = TransactionState.APPROVED | TransactionState.PROCESSING
@@ -21,7 +22,7 @@ const STATE_TEXT = {
     }
 }
 
-const StatusOverlay: React.FC<StatusProps> = ({ status }) => {
+const StatusOverlay: React.FC<StatusProps> = ({ status, lastUrl }) => {
     const [ focusedApp, focusApp ] = useState(true);
     const showStatus = (status: TransactionState): boolean => {
         return !focusedApp && (
@@ -29,7 +30,11 @@ const StatusOverlay: React.FC<StatusProps> = ({ status }) => {
         );
     };
 
-    setTimeout(() => focusApp(false), WAIT_TIMEOUT);
+    const redirectWallet = () => {
+        focusApp(true);
+        window.open(lastUrl, "__blank");
+        setTimeout(() => focusApp(false), WAIT_TIMEOUT);
+    }
 
     const stateText = STATE_TEXT[status as TransitionalTransationState] || {text: "undefined", content: "undefined"}
 
@@ -41,7 +46,7 @@ const StatusOverlay: React.FC<StatusProps> = ({ status }) => {
                     <div className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg p-8 flex justify-center flex-col">
                         <h5 className="text-center font-bold mb-4">{i18n.t(stateText.title)}</h5>
                         <p>{i18n.t(stateText.content)}</p>
-                        <PrimaryButton className="mt-4" title={i18n.t("goToWallet")} callback={() => focusApp(true)}/>
+                        <PrimaryButton className="mt-4" title={i18n.t("goToWallet")} callback={redirectWallet}/>
                     </div>
                 </div>
             </div>
