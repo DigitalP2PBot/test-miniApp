@@ -92,14 +92,18 @@ function App() {
 
   const dispatch = useDispatch<AppDispatch>();
 
+  useEffect(() => {
+    const originalOpen = window.open;
+    window.open = function (url: string | URL | undefined, target: string | undefined, features: string |undefined ) {
+      console.log("Intercepted open:", url, target, features);
+      setLastUrl(url);
+      return originalOpen(url, target, features);
+    };
 
-  const originalOpen = window.open;
-  window.open = function (url: string | URL | undefined, target: string | undefined, features: string |undefined ) {
-    console.log("open", url, target, features);
-    setLastUrl(url);
-    return originalOpen(url, target, features);
-  };
-
+    return () => {
+      window.open = originalOpen;
+    };
+  }, []);
 
   const finishTransaction = (message:string, state: TransactionState) => {
     clearInterval(checkInterval);
